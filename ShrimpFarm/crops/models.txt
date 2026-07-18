@@ -1,0 +1,20 @@
+Farm
+│
+├── Pond
+│     │
+│     ├── Crop
+│     │     │
+│     │     ├── Stocking
+│     │     ├── FeedingPlan
+│     │     ├── FeedingRecord
+│     │     ├── WaterTreatment
+│     │     ├── WaterExchange
+│     │     ├── Harvest
+│     │     ├── Expense
+│     │     └── SensorAlert
+│     │
+│     └── record_mode
+│
+├── InventoryItem
+│
+└── Users (Django Auth)

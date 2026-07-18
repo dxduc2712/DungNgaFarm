@@ -1,0 +1,403 @@
+# AI Prompt — MinhDungFarm: Quản Lý Hồ Tôm (Phase 1 MVP, Django)
+
+Copy toàn bộ nội dung dưới đây và đưa cho AI (Claude Code, Cursor, ChatGPT, v.v.) để nó scaffold dự án.
+
+---
+
+## PROMPT
+
+You are an expert full-stack Django developer. Build **Phase 1 (MVP)** of a shrimp farm management web app called **MinhDungFarm** ("Quản Lý Hồ Tôm"). Follow the spec below exactly. Ask no clarifying questions — make reasonable assumptions and note them in a `NOTES.md` file if needed.
+
+### Tech Stack
+- **Backend:** Django 5.x + Django REST Framework, exposed as a pure JSON API (no server-rendered templates for app pages)
+- **Frontend:** **React** (Vite + React Router) styled with **Tailwind CSS**, calling the Django REST API. Configure CORS (`django-cors-headers`) so the React dev server can talk to Django locally.
+- **Database:** PostgreSQL
+- **Auth:** DRF Token or JWT (djangorestframework-simplejwt) — React stores the token and sends it on every request. Keep it simple (no refresh-token rotation needed yet).
+- **Admin:** Django admin enabled for every model (used by staff for backend data entry/inventory correction)
+- **Language:** UI labels in **Vietnamese**; code, comments, and variable/model names in **English**.
+- Keep the app mobile-friendly/responsive since farm staff will use phones by the pond.
+
+### Project Structure
+Create a Django project `minhdungfarm` with an app `farm` containing the models/views/templates below. Include a `requirements.txt`, `.env.example` for DB credentials, and a `README.md` with setup + migration + seed instructions.
+
+### Data Models (`crops/models.py`)
+from django.db import models
+
+# Create your models here.
+class Farm(models.Model):
+    name = models.CharField(max_length=200)
+    address = models.TextField()
+
+    def __str__(self):
+        return self.name
+    
+# Farm
+#  └── has many Pond
+
+class Pond(models.Model):
+
+    class PondType(models.TextChoices):
+        GROW = "GROW", "Grow Pond"
+        WATER = "WATER", "Water Reservoir"
+
+    class RecordMode(models.TextChoices):
+        OFF = "OFF", "Off"
+        ALERT = "ALERT", "Alert Only"
+        ALL = "ALL", "Record All"
+
+    farm = models.ForeignKey(
+        Farm,
+        on_delete=models.CASCADE,
+        related_name="ponds"
+    )
+
+    name = models.CharField(max_length=100)
+
+    pond_type = models.CharField(
+        max_length=20,
+        choices=PondType.choices
+    )
+
+    area_m2 = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+
+    depth_m = models.DecimalField(
+        max_digits=5,
+        decimal_places=2
+    )
+
+    record_mode = models.CharField(
+        max_length=10,
+        choices=RecordMode.choices,
+        default=RecordMode.ALERT
+    )
+
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+    
+# Farm
+#  └── Pond
+#        └── many Crop
+
+class Crop(models.Model):
+
+    class Status(models.TextChoices):
+        ACTIVE = "ACTIVE", "Active"
+        COMPLETED = "COMPLETED", "Completed"
+
+    pond = models.ForeignKey(
+        Pond,
+        on_delete=models.CASCADE,
+        related_name="crops"
+    )
+
+    code = models.CharField(max_length=50)
+
+    shrimp_species = models.CharField(max_length=100)
+
+    start_date = models.DateField()
+
+    expected_harvest_date = models.DateField()
+
+    end_date = models.DateField(
+        null=True,
+        blank=True
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.ACTIVE
+    )
+
+    def __str__(self):
+        return self.code
+    
+# Pond
+#  └── Crop
+#        ├── Stocking
+#        ├── Feeding
+#        ├── Harvest
+#        ├── Expenses
+#        └── Activities
+
+class Stocking(models.Model):
+
+    crop = models.OneToOneField(
+        Crop,
+        on_delete=models.CASCADE,
+        related_name="stocking"
+    )
+
+    stocking_date = models.DateField()
+
+    quantity = models.PositiveIntegerField()
+
+    average_weight = models.DecimalField(
+        max_digits=8,
+        decimal_places=2
+    )
+
+    supplier = models.CharField(
+        max_length=200,
+        blank=True
+    )
+
+class Feed(models.Model):
+
+    name = models.CharField(max_length=200)
+
+    brand = models.CharField(max_length=100)
+
+    weight_kg = models.DecimalField(
+        max_digits=8,
+        decimal_places=2
+    )
+
+    price = models.DecimalField(
+        max_digits=12,
+        decimal_places=2
+    )
+
+    def __str__(self):
+        return self.name
+    
+class InventoryItem(models.Model):
+
+    feed = models.ForeignKey(
+        Feed,
+        on_delete=models.CASCADE,
+        related_name="inventory_items"
+    )
+
+    quantity = models.PositiveIntegerField()
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+class FeedingPlan(models.Model):
+
+    crop = models.ForeignKey(
+        Crop,
+        on_delete=models.CASCADE,
+        related_name="feeding_plans"
+    )
+
+    day_from = models.PositiveIntegerField()
+
+    day_to = models.PositiveIntegerField()
+
+    recommended_quantity_kg = models.DecimalField(
+        max_digits=8,
+        decimal_places=2
+    )
+class FeedingRecord(models.Model):
+
+    crop = models.ForeignKey(
+        Crop,
+        on_delete=models.CASCADE,
+        related_name="feeding_records"
+    )
+
+    feed = models.ForeignKey(
+        Feed,
+        on_delete=models.PROTECT
+    )
+
+    quantity_kg = models.DecimalField(
+        max_digits=8,
+        decimal_places=2
+    )
+
+    feeding_time = models.DateTimeField()
+
+    note = models.TextField(blank=True)
+
+# Crop
+#  └── many FeedingRecord
+
+# Feed
+#  └── used by many FeedingRecord
+
+class WaterTreatment(models.Model):
+
+    crop = models.ForeignKey(
+        Crop,
+        on_delete=models.CASCADE,
+        related_name="water_treatments"
+    )
+
+    product_name = models.CharField(max_length=200)
+
+    quantity = models.DecimalField(
+        max_digits=8,
+        decimal_places=2
+    )
+
+    treatment_time = models.DateTimeField()
+
+    note = models.TextField(blank=True)
+class WaterExchange(models.Model):
+
+    class Action(models.TextChoices):
+        PUMP_IN = "PUMP_IN", "Pump In"
+        SIPHON = "SIPHON", "Siphon"
+
+    crop = models.ForeignKey(
+        Crop,
+        on_delete=models.CASCADE,
+        related_name="water_exchanges"
+    )
+
+    action = models.CharField(
+        max_length=20,
+        choices=Action.choices
+    )
+
+    percentage = models.DecimalField(
+        max_digits=5,
+        decimal_places=2
+    )
+
+    exchange_time = models.DateTimeField()
+
+    note = models.TextField(blank=True)
+
+class Harvest(models.Model):
+
+    class HarvestType(models.TextChoices):
+        PARTIAL = "PARTIAL", "Partial"
+        FINAL = "FINAL", "Final"
+
+    crop = models.ForeignKey(
+        Crop,
+        on_delete=models.CASCADE,
+        related_name="harvests"
+    )
+
+    harvest_type = models.CharField(
+        max_length=20,
+        choices=HarvestType.choices
+    )
+
+    harvest_date = models.DateField()
+
+    quantity_kg = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+
+    average_weight_g = models.DecimalField(
+        max_digits=8,
+        decimal_places=2
+    )
+
+    sale_price = models.DecimalField(
+        max_digits=12,
+        decimal_places=2
+    )
+class Expense(models.Model):
+
+    crop = models.ForeignKey(
+        Crop,
+        on_delete=models.CASCADE,
+        related_name="expenses"
+    )
+
+    category = models.CharField(max_length=100)
+
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2
+    )
+
+    expense_date = models.DateField()
+
+    note = models.TextField(blank=True)
+    
+class SensorAlert(models.Model):
+
+    crop = models.ForeignKey(
+        Crop,
+        on_delete=models.CASCADE,
+        related_name="alerts"
+    )
+
+    pond = models.ForeignKey(
+        Pond,
+        on_delete=models.CASCADE,
+        related_name="alerts"
+    )
+
+    sensor_type = models.CharField(max_length=50)
+
+    value = models.DecimalField(
+        max_digits=8,
+        decimal_places=2
+    )
+
+    threshold = models.DecimalField(
+        max_digits=8,
+        decimal_places=2
+    )
+
+    message = models.TextField()
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    resolved = models.BooleanField(default=False)
+   - `name` (e.g. "Ao 1")
+   - `area_m2` (Diện tích, decimal)
+   - `depth_m` (Độ sâu, decimal)
+   - `status` (choices: empty / stocking / active / harvesting / maintenance)
+   - `created_at`, `updated_at`
+
+
+### React Pages (calling the Django REST API)
+
+- **Dashboard** (`/`) — cards showing: total ponds, active seasons (số vụ nuôi),  and an "alerts" section (e.g. low feed/medicine stock, pH/salinity/temperature out of normal range on the latest daily log per pond). Also show a **"Chỉ số môi trường" (sensor readings) card per pond** — see IoT section below.
+- **Pond list & detail** (`/pond`, `/pond/:id`) — CRUD for Pond; detail page shows current season + recent daily logs + latest sensor reading.
+- **Daily log** (`/ao/:id/nhat-ky`) — form to add a log entry; list of past entries.
+- **Feed inventory** (`/kho-thuc-an`) — list of FeedStock with remaining qty; "Cho ăn" form to log a FeedingLog against a pond (auto-deducts stock).
+- Use a shared layout (sidebar/nav in Vietnamese: Tổng quan, Ao, Nhật ký, Kho thức ăn, Kho thuốc) and a simple `axios`/`fetch` API client with the auth token attached.
+
+### IoT Sensor Data — Phase 1 (UI-only defaults) vs Phase 2 (real integration)
+
+**Phase 1 (this build):** No real IoT device integration yet. Still model the data shape now so Phase 2 just plugs in:
+- Add a `SensorReading` model (pond FK, `ph`, `salinity_ppt`, `temperature_c`, `recorded_at`, `source` = "manual" | "iot", default `"manual"`).
+- Seed each pond with one `SensorReading` row (`source="manual"`) so the UI has real-looking numbers instead of blank/zero.
+- On the Dashboard and Pond detail pages, show a **"Chỉ số môi trường (IoT)" widget** displaying the latest `SensorReading` per pond, with a small badge: "Dữ liệu thủ công" (manual) vs "Dữ liệu IoT" (once `source="iot"` exists). If no reading exists at all, show sensible placeholder text ("Chưa có dữ liệu") rather than an error.
+- Expose `/api/v1/sensor-readings/` as a normal DRF ViewSet (CRUD) — this is exactly the endpoint a Phase 2 IoT device/gateway will POST to later; no schema changes needed then.
+
+**Phase 2 (future, do NOT build now):** ESP32/Arduino devices push readings automatically (e.g. via MQTT → a small ingestion service → this same `SensorReading` endpoint), replacing manual entries and enabling near-real-time charts/alerts. Leave a short `NOTES.md` comment marking this as the next step.
+
+### REST API
+Expose all models via DRF ViewSets under `/api/v1/` (ponds, seasons, daily-logs, feed-stock, feeding-logs, medicine-stock, medicine-usage-logs, sensor-readings) with standard CRUD, so the React frontend, a future mobile app, an IoT gateway, or an AI layer can all consume the same data. Use DRF's browsable API + a basic `filterset` for pond/date where relevant.
+
+### Alerts logic (simple, rule-based for now)
+Flag in the dashboard when:
+- pH outside 7.0–9.0
+- salinity outside 5–25 ppt
+- temperature outside 26–32°C
+- any FeedStock or MedicineStock `quantity_remaining` < 10% of `quantity_in`
+
+### Deliverables
+1. `backend/` — full Django project (models incl. SensorReading, admin, migrations, DRF viewsets+serializers, urls, CORS + JWT auth config)
+2. `frontend/` — React (Vite) app with the pages listed above, Tailwind configured, an API client, and the IoT sensor widget showing manual/default data
+3. Seed script/fixture with 2-3 sample ponds, one active season each, a week of daily logs, starter feed/medicine stock, and one manual SensorReading per pond
+4. `README.md` with setup steps for both apps (Python venv + `pip install -r requirements.txt` + Postgres config + `migrate` + `createsuperuser` + `runserver`, and `npm install` + `npm run dev` for the frontend, including the `.env`/API base URL wiring between them)
+5. Keep everything minimal and working — this is an MVP; don't over-engineer permissions, multi-tenant support, or real IoT ingestion yet (those are future phases).
+
+---
+
+### Ghi chú khi dùng prompt này
+- Frontend đã chốt là **React** (Vite + Tailwind), backend Django chỉ đóng vai trò REST API thuần.
+- Dữ liệu IoT ở Phase 1 chỉ là **giá trị mặc định/nhập tay** hiển thị đúng chỗ trên UI; schema (`SensorReading`, endpoint `/api/v1/sensor-readings/`) đã có sẵn để Phase 2 cắm thiết bị ESP32/Arduino vào mà không cần đổi cấu trúc.
+- Prompt này giả định PostgreSQL chạy local hoặc qua Docker — có thể thêm "include a docker-compose.yml with postgres + backend + frontend services" nếu muốn.
+- Phần "AI đọc dữ liệu nhật ký" (giai đoạn sau) chưa đưa vào — đây chỉ là Phase 1.
