@@ -1,0 +1,157 @@
+=== yêu cầu về dash board cho app hồ tôm.
++ section : thông tin của sensor: ph, nhiệt độ, độ ẩm, độ mặn.
++ thông tin vụ mùa(Crop): tên hồ, trạng thái mùa vụ 
+    * (Đang nuôi, thu hoạch một phần, thu hoạch xong),
+    * function tính số ngày đã nuôi (ngày hiện tại - ngày thả tôm)
+    * mức độ tăng trưởng con tôm (con/kg)
+    + khối lượng thức ăn trong 1 ngày (kg/ngày)
+====== Quản lý mùa vụ =======================
+Chức năng cần có : Tìm kiếm, 
+- bắt đầu mùa vụ mới (tên hồ, ngày bắt đầu, ngày kết thúc dự kiến, số lượng tôm thả, chi phí thả tôm)
+- hiện thị danh sách mùa vụ (ID, Tên Vụ, Hồ, ngày thả, chí phí đến ngày hiện tại - 
+thêm xóa sửa, xem chi tiết, thay đổi trạng thái mùa vụ)
+- Xem thông tin mùa vụ chi tiết.
+====== Log cho ăn ============================
+- chức năng cần có : xem theo hồ, có chưc năng tìm kiếm 
+    + thêm feed record (tên thức ăn, số kg, hồ cho ăn - có thể log 1 lần cho nhiều hồ nếu cùng số lượng)
+    + Hiện thị danh sách feeding records theo hồ(ID, Hồ, tên đồ ăn, buổi, thời gian cụ thể, số lượng kg, 
+    người log , note - xóa, sửa, xe chi tiết )
+
+
+erDiagram
+
+    FARM ||--o{ POND : has
+
+    POND ||--o{ CROP : contains
+
+    CROP ||--|| STOCKING : has
+    CROP ||--o{ FEEDINGPLAN : has
+    CROP ||--o{ FEEDINGRECORD : has
+    CROP ||--o{ WATERTREATMENT : has
+    CROP ||--o{ WATEREXCHANGE : has
+    CROP ||--o{ HARVEST : has
+    CROP ||--o{ EXPENSE : has
+    CROP ||--o{ SENSORALERT : has
+
+    FEED ||--o{ INVENTORYITEM : inventory
+    FEED ||--o{ FEEDINGRECORD : used_in
+
+    POND ||--o{ SENSORALERT : generates
+
+    FARM {
+        int id PK
+        string name
+        text address
+    }
+
+    POND {
+        int id PK
+        int farm_id FK
+        string name
+        string pond_type
+        decimal area_m2
+        decimal depth_m
+        string record_mode
+        boolean active
+    }
+
+    CROP {
+        int id PK
+        int pond_id FK
+        string code
+        string shrimp_species
+        date start_date
+        date expected_harvest_date
+        date end_date
+        string status
+    }
+
+    STOCKING {
+        int id PK
+        int crop_id FK
+        date stocking_date
+        int quantity
+        decimal average_weight
+        string supplier
+    }
+
+    FEED {
+        int id PK
+        string name
+        string brand
+        decimal weight_kg
+        decimal price
+    }
+
+    INVENTORYITEM {
+        int id PK
+        int feed_id FK
+        int quantity
+        datetime updated_at
+    }
+
+    FEEDINGPLAN {
+        int id PK
+        int crop_id FK
+        int day_from
+        int day_to
+        decimal recommended_quantity_kg
+    }
+
+    FEEDINGRECORD {
+        int id PK
+        int crop_id FK
+        int feed_id FK
+        decimal quantity_kg
+        datetime feeding_time
+        text note
+    }
+
+    WATERTREATMENT {
+        int id PK
+        int crop_id FK
+        string product_name
+        decimal quantity
+        datetime treatment_time
+        text note
+    }
+
+    WATEREXCHANGE {
+        int id PK
+        int crop_id FK
+        string action
+        decimal percentage
+        datetime exchange_time
+        text note
+    }
+
+    HARVEST {
+        int id PK
+        int crop_id FK
+        string harvest_type
+        date harvest_date
+        decimal quantity_kg
+        decimal average_weight_g
+        decimal sale_price
+    }
+
+    EXPENSE {
+        int id PK
+        int crop_id FK
+        string category
+        decimal amount
+        date expense_date
+        text note
+    }
+
+    SENSORALERT {
+        int id PK
+        int crop_id FK
+        int pond_id FK
+        string sensor_type
+        decimal value
+        decimal threshold
+        text message
+        datetime created_at
+        boolean resolved
+    }

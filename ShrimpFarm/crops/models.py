@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 class Farm(models.Model):
     name = models.CharField(max_length=200)
@@ -31,24 +32,26 @@ class Pond(models.Model):
     name = models.CharField(max_length=100)
 
     pond_type = models.CharField(
-        max_length=20,
-        choices=PondType.choices
+        max_length=20, choices=PondType.choices,
+        default=PondType.GROW
     )
 
     area_m2 = models.DecimalField(
         max_digits=10,
-        decimal_places=2
+        decimal_places=2,
+        null=True,blank=True
     )
 
     depth_m = models.DecimalField(
         max_digits=5,
-        decimal_places=2
+        decimal_places=2,
+        null=True, blank=True
     )
 
     record_mode = models.CharField(
         max_length=10,
         choices=RecordMode.choices,
-        default=RecordMode.ALERT
+        default=RecordMode.OFF
     )
 
     active = models.BooleanField(default=True)
@@ -64,6 +67,7 @@ class Crop(models.Model):
 
     class Status(models.TextChoices):
         ACTIVE = "ACTIVE", "Active"
+        INACTIVE = "INACTIVE", "Inactive"
         COMPLETED = "COMPLETED", "Completed"
 
     pond = models.ForeignKey(
@@ -71,14 +75,14 @@ class Crop(models.Model):
         on_delete=models.CASCADE,
         related_name="crops"
     )
-
-    code = models.CharField(max_length=50)
+    # make this auto genenting
+    code = models.CharField(max_length=50, unique=True, editable=False)
 
     shrimp_species = models.CharField(max_length=100)
 
     start_date = models.DateField()
 
-    expected_harvest_date = models.DateField()
+    expected_harvest_date = models.DateField(null=True)
 
     end_date = models.DateField(
         null=True,
@@ -90,6 +94,13 @@ class Crop(models.Model):
         choices=Status.choices,
         default=Status.ACTIVE
     )
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            super().save(*args, **kwargs)  # Get ID first
+            self.code = f"CROP{self.id:05d}"
+            Crop.objects.filter(pk=self.pk).update(code=self.code)
+        else:
+            super().save(*args, **kwargs)
 
     def __str__(self):
         return self.code
@@ -103,7 +114,6 @@ class Crop(models.Model):
 #        └── Activities
 
 class Stocking(models.Model):
-
     crop = models.OneToOneField(
         Crop,
         on_delete=models.CASCADE,
@@ -111,23 +121,20 @@ class Stocking(models.Model):
     )
 
     stocking_date = models.DateField()
-
     quantity = models.PositiveIntegerField()
-
     average_weight = models.DecimalField(
         max_digits=8,
-        decimal_places=2
+        decimal_places=2,
+        null=True, blank=True
     )
 
     supplier = models.CharField(
-        max_length=200,
-        blank=True
+        max_length=200, blank=True, null=True
     )
 
 class Feed(models.Model):
 
     name = models.CharField(max_length=200)
-
     brand = models.CharField(max_length=100)
 
     weight_kg = models.DecimalField(
@@ -152,9 +159,8 @@ class InventoryItem(models.Model):
     )
 
     quantity = models.PositiveIntegerField()
-
     updated_at = models.DateTimeField(
-        auto_now=True
+        auto_now_add=True
     )
 class FeedingPlan(models.Model):
 
@@ -165,12 +171,12 @@ class FeedingPlan(models.Model):
     )
 
     day_from = models.PositiveIntegerField()
-
     day_to = models.PositiveIntegerField()
 
     recommended_quantity_kg = models.DecimalField(
         max_digits=8,
-        decimal_places=2
+        decimal_places=2,
+        null=True, blank=True
     )
 class FeedingRecord(models.Model):
 
@@ -309,9 +315,7 @@ class SensorAlert(models.Model):
         on_delete=models.CASCADE,
         related_name="alerts"
     )
-
     sensor_type = models.CharField(max_length=50)
-
     value = models.DecimalField(
         max_digits=8,
         decimal_places=2
@@ -323,9 +327,7 @@ class SensorAlert(models.Model):
     )
 
     message = models.TextField()
-
     created_at = models.DateTimeField(
         auto_now_add=True
     )
-
     resolved = models.BooleanField(default=False)

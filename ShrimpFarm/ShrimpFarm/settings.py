@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'crops'
+    # thrid party djangorestframework
+    'rest_framework',
+    'crops.apps.CropsConfig'
 ]
 
 MIDDLEWARE = [

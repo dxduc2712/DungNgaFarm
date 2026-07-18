@@ -1,6 +1,6 @@
 from django.urls import path
-from . import views
+from .views.crop_view import CropView
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', CropView.as_view()),
 ]
