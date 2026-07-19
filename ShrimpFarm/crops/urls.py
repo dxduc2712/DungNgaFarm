@@ -1,6 +1,7 @@
 from django.urls import path
-from .views.crop_view import CropView
+from .views.crop_view import CropListView, CropDetailView
 
 urlpatterns = [
-    path('', CropView.as_view()),
+    path('crops/', CropListView.as_view),
+    path('crops/<int:pk>/', CropDetailView.as_view()),
 ]
