@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='crop',
             name='expected_harvest_date',
-            field=models.DateField(default=True, null=True),
+            field=models.DateField(blank=True, null=True),
         ),
         migrations.AlterField(
             model_name='crop',

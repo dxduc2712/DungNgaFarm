@@ -2,4 +2,9 @@ from django.apps import AppConfig
 
 
 class CropsConfig(AppConfig):
-    name = 'crops'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "crops"
+    verbose_name = "Quản lý hồ tôm"
+
+    def ready(self):
+        import crops.signals  # noqa: F401

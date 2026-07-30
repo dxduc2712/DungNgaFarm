@@ -1,0 +1,131 @@
+{
+  "common": {
+    "appName": "MinhDungFarm",
+    "appSubtitle": "Shrimp farm management",
+    "loading": "Loading...",
+    "note": "Note",
+    "time": "Time",
+    "quantity": "Quantity",
+    "quantityKg": "Quantity (kg)",
+    "feed": "Feed",
+    "selectFeed": "Select feed",
+    "pond": "Pond",
+    "selectPond": "Select pond",
+    "crop": "Crop cycle",
+    "selectCrop": "Select crop cycle",
+    "none": "None",
+    "remainingKg": "{{quantity}} kg left",
+    "area": "Area",
+    "depth": "Depth",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "back": "Back",
+    "backTo": "Back to {{name}}",
+    "backToPondDetail": "Back to pond details",
+    "closeMenu": "Close menu",
+    "product": "Product",
+    "dosage": "Dosage",
+    "action": "Action",
+    "percentage": "Percentage (%)"
+  },
+  "login": {
+    "subtitle": "Sign in to manage your shrimp farm",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in...",
+    "invalidCredentials": "Invalid username or password"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "ponds": "Ponds",
+    "feedInventory": "Feed inventory",
+    "alerts": "Alerts",
+    "logout": "Sign out"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Quick overview of farm status",
+    "loadError": "Unable to load dashboard data.",
+    "totalPonds": "Total ponds",
+    "activeCrops": "Active crop cycles",
+    "unresolvedAlerts": "Unresolved alerts",
+    "environmentMetrics": "Environment metrics",
+    "lowStockTitle": "Low feed stock"
+  },
+  "ponds": {
+    "title": "Pond list",
+    "subtitle": "Manage grow-out and reserve ponds",
+    "areaLabel": "Area: {{value}} m²",
+    "depthLabel": "Depth: {{value}} m",
+    "cropLabel": "Crop cycle: {{value}}",
+    "typeGrow": "Grow-out pond",
+    "typeWater": "Reserve pond",
+    "notFound": "Pond not found.",
+    "infoTitle": "Pond information",
+    "selectCrop": "Select crop cycle",
+    "openLog": "Open log",
+    "recentFeedingTitle": "Recent feeding history",
+    "noFeedingRecords": "No feeding records yet."
+  },
+  "feedingLog": {
+    "title": "Log — {{name}}",
+    "cropLabel": "Crop cycle {{code}}",
+    "noActiveCrop": "This pond has no active crop cycle.",
+    "recordFeedingSuccess": "Feeding recorded.",
+    "recordTreatmentSuccess": "Water treatment recorded.",
+    "recordExchangeSuccess": "Water exchange recorded.",
+    "feedingSection": "Record feeding",
+    "saveFeeding": "Save feeding",
+    "waterTreatmentSection": "Water treatment",
+    "saveTreatment": "Save treatment",
+    "waterExchangeSection": "Water exchange",
+    "saveExchange": "Save exchange",
+    "recentHistory": "Recent history",
+    "feedingHistory": "Feeding",
+    "treatmentHistory": "Water treatment",
+    "exchangeHistory": "Water exchange",
+    "pumpIn": "Pump in",
+    "siphon": "Siphon/exchange"
+  },
+  "feedInventory": {
+    "title": "Feed inventory",
+    "subtitle": "Track stock and record feeding quickly",
+    "lowStock": "Low stock",
+    "feedingSection": "Feeding",
+    "recordSuccess": "Feeding recorded and inventory updated.",
+    "submitFeeding": "Record feeding"
+  },
+  "alerts": {
+    "title": "Alerts",
+    "subtitle": "Monitor and resolve environment alerts",
+    "empty": "No unresolved alerts.",
+    "resolve": "Resolved"
+  },
+  "sensor": {
+    "noData": "No data available",
+    "sourceIot": "IoT data",
+    "sourceManual": "Manual data",
+    "salinity": "Salinity",
+    "temperature": "Temperature"
+  },
+  "chart": {
+    "feedingStatsTitle": "Weekly feeding statistics",
+    "noDataInRange": "No feeding data in this date range",
+    "feedAmount": "Feed amount",
+    "planned": "Planned",
+    "total": "Total",
+    "averagePerWeek": "Average/week"
+  },
+  "dateRange": {
+    "days7": "7 days",
+    "weeks4": "4 weeks",
+    "months3": "3 months",
+    "fromDate": "From date",
+    "toDate": "To date",
+    "byDay": "By day",
+    "byWeek": "By week",
+    "byMonth": "By month"
+  }
+}

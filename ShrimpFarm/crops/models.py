@@ -331,3 +331,31 @@ class SensorAlert(models.Model):
         auto_now_add=True
     )
     resolved = models.BooleanField(default=False)
+
+
+class SensorReading(models.Model):
+
+    class Source(models.TextChoices):
+        MANUAL = "manual", "Manual"
+        IOT = "iot", "IoT"
+
+    pond = models.ForeignKey(
+        Pond,
+        on_delete=models.CASCADE,
+        related_name="sensor_readings",
+    )
+    ph = models.DecimalField(max_digits=4, decimal_places=2)
+    salinity_ppt = models.DecimalField(max_digits=6, decimal_places=2)
+    temperature_c = models.DecimalField(max_digits=5, decimal_places=2)
+    recorded_at = models.DateTimeField()
+    source = models.CharField(
+        max_length=20,
+        choices=Source.choices,
+        default=Source.MANUAL,
+    )
+
+    class Meta:
+        ordering = ["-recorded_at"]
+
+    def __str__(self):
+        return f"{self.pond.name} @ {self.recorded_at}"

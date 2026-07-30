@@ -1,9 +1,5 @@
 # AI Prompt — MinhDungFarm: Quản Lý Hồ Tôm (Phase 1 MVP, Django)
 
-Copy toàn bộ nội dung dưới đây và đưa cho AI (Claude Code, Cursor, ChatGPT, v.v.) để nó scaffold dự án.
-
----
-
 ## PROMPT
 
 You are an expert full-stack Django developer. Build **Phase 1 (MVP)** of a shrimp farm management web app called **MinhDungFarm** ("Quản Lý Hồ Tôm"). Follow the spec below exactly. Ask no clarifying questions — make reasonable assumptions and note them in a `NOTES.md` file if needed.

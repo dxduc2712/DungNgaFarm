@@ -1,0 +1,131 @@
+{
+  "common": {
+    "appName": "MinhDungFarm",
+    "appSubtitle": "Quản lý hồ tôm",
+    "loading": "Đang tải...",
+    "note": "Ghi chú",
+    "time": "Thời gian",
+    "quantity": "Khối lượng",
+    "quantityKg": "Khối lượng (kg)",
+    "feed": "Thức ăn",
+    "selectFeed": "Chọn thức ăn",
+    "pond": "Ao",
+    "selectPond": "Chọn ao",
+    "crop": "Vụ nuôi",
+    "selectCrop": "Chọn vụ nuôi",
+    "none": "Chưa có",
+    "remainingKg": "Còn {{quantity}} kg",
+    "area": "Diện tích",
+    "depth": "Độ sâu",
+    "status": "Trạng thái",
+    "active": "Đang hoạt động",
+    "inactive": "Ngưng",
+    "back": "Quay lại",
+    "backTo": "Quay lại {{name}}",
+    "backToPondDetail": "Quay lại chi tiết ao",
+    "closeMenu": "Đóng menu",
+    "product": "Sản phẩm",
+    "dosage": "Liều lượng",
+    "action": "Hành động",
+    "percentage": "Tỷ lệ (%)"
+  },
+  "login": {
+    "subtitle": "Đăng nhập để quản lý hồ tôm",
+    "username": "Tên đăng nhập",
+    "password": "Mật khẩu",
+    "submit": "Đăng nhập",
+    "submitting": "Đang đăng nhập...",
+    "invalidCredentials": "Tên đăng nhập hoặc mật khẩu không đúng"
+  },
+  "nav": {
+    "dashboard": "Tổng quan",
+    "ponds": "Ao",
+    "feedInventory": "Kho thức ăn",
+    "alerts": "Cảnh báo",
+    "logout": "Đăng xuất"
+  },
+  "dashboard": {
+    "title": "Tổng quan",
+    "subtitle": "Theo dõi nhanh tình trạng trại tôm",
+    "loadError": "Không thể tải dữ liệu tổng quan.",
+    "totalPonds": "Tổng số ao",
+    "activeCrops": "Vụ nuôi đang hoạt động",
+    "unresolvedAlerts": "Cảnh báo chưa xử lý",
+    "environmentMetrics": "Chỉ số môi trường",
+    "lowStockTitle": "Kho thức ăn sắp hết"
+  },
+  "ponds": {
+    "title": "Danh sách ao",
+    "subtitle": "Quản lý ao nuôi và ao dự trữ",
+    "areaLabel": "Diện tích: {{value}} m²",
+    "depthLabel": "Độ sâu: {{value}} m",
+    "cropLabel": "Vụ nuôi: {{value}}",
+    "typeGrow": "Ao nuôi",
+    "typeWater": "Ao dự trữ",
+    "notFound": "Không tìm thấy ao.",
+    "infoTitle": "Thông tin ao",
+    "selectCrop": "Chọn vụ nuôi",
+    "openLog": "Mở nhật ký",
+    "recentFeedingTitle": "Lịch sử cho ăn gần đây",
+    "noFeedingRecords": "Chưa có bản ghi cho ăn."
+  },
+  "feedingLog": {
+    "title": "Nhật ký — {{name}}",
+    "cropLabel": "Vụ nuôi {{code}}",
+    "noActiveCrop": "Ao này chưa có vụ nuôi đang hoạt động.",
+    "recordFeedingSuccess": "Đã ghi nhận cho ăn.",
+    "recordTreatmentSuccess": "Đã ghi nhận xử lý nước.",
+    "recordExchangeSuccess": "Đã ghi nhận thay nước.",
+    "feedingSection": "Ghi cho ăn",
+    "saveFeeding": "Lưu cho ăn",
+    "waterTreatmentSection": "Xử lý nước",
+    "saveTreatment": "Lưu xử lý nước",
+    "waterExchangeSection": "Thay nước",
+    "saveExchange": "Lưu thay nước",
+    "recentHistory": "Lịch sử gần đây",
+    "feedingHistory": "Cho ăn",
+    "treatmentHistory": "Xử lý nước",
+    "exchangeHistory": "Thay nước",
+    "pumpIn": "Bơm vào",
+    "siphon": "Hút/thay"
+  },
+  "feedInventory": {
+    "title": "Kho thức ăn",
+    "subtitle": "Theo dõi tồn kho và ghi cho ăn nhanh",
+    "lowStock": "Sắp hết",
+    "feedingSection": "Cho ăn",
+    "recordSuccess": "Đã ghi cho ăn và trừ kho.",
+    "submitFeeding": "Ghi cho ăn"
+  },
+  "alerts": {
+    "title": "Cảnh báo",
+    "subtitle": "Theo dõi và xử lý cảnh báo môi trường",
+    "empty": "Không có cảnh báo chưa xử lý.",
+    "resolve": "Đã xử lý"
+  },
+  "sensor": {
+    "noData": "Chưa có dữ liệu",
+    "sourceIot": "Dữ liệu IoT",
+    "sourceManual": "Dữ liệu thủ công",
+    "salinity": "Độ mặn",
+    "temperature": "Nhiệt độ"
+  },
+  "chart": {
+    "feedingStatsTitle": "Thống kê cho ăn theo tuần",
+    "noDataInRange": "Chưa có dữ liệu cho ăn trong khoảng thời gian này",
+    "feedAmount": "Lượng ăn",
+    "planned": "Kế hoạch",
+    "total": "Tổng",
+    "averagePerWeek": "Trung bình/tuần"
+  },
+  "dateRange": {
+    "days7": "7 ngày",
+    "weeks4": "4 tuần",
+    "months3": "3 tháng",
+    "fromDate": "Từ ngày",
+    "toDate": "Đến ngày",
+    "byDay": "Theo ngày",
+    "byWeek": "Theo tuần",
+    "byMonth": "Theo tháng"
+  }
+}
