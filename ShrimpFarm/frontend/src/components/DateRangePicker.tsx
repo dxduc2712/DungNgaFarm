@@ -50,7 +50,7 @@ export default function DateRangePicker({ value, onChange }: DateRangePickerProp
   ]
 
   return (
-    <div className="space-y-4">
+    <div className="min-w-0 space-y-4">
       <div className="flex flex-wrap gap-2">
         {presets.map((preset) => {
           const selected = value.from === preset.from && value.to === preset.to
@@ -73,14 +73,14 @@ export default function DateRangePicker({ value, onChange }: DateRangePickerProp
         })}
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid min-w-0 gap-3 sm:grid-cols-2 *:min-w-0">
         <label className="block text-sm">
           <span className="text-ink-muted">{t('dateRange.fromDate')}</span>
           <input
             type="date"
             value={value.from}
             onChange={(e) => onChange({ ...value, from: e.target.value })}
-            className="mt-1 w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
+            className="mt-1 w-full min-w-0 max-w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
           />
         </label>
         <label className="block text-sm">
@@ -89,7 +89,7 @@ export default function DateRangePicker({ value, onChange }: DateRangePickerProp
             type="date"
             value={value.to}
             onChange={(e) => onChange({ ...value, to: e.target.value })}
-            className="mt-1 w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
+            className="mt-1 w-full min-w-0 max-w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
           />
         </label>
       </div>

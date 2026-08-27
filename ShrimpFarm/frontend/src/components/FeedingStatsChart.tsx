@@ -64,9 +64,9 @@ export default function FeedingStatsChart({ pondId, cropId }: FeedingStatsChartP
   const barCategoryGap = range.groupBy === 'day' ? '18%' : '55%'
 
   return (
-    <div className="rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]">
+    <div className="min-w-0 rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]">
       <h2 className="text-lg font-semibold text-ink">{t('chart.feedingStatsTitle')}</h2>
-      <div className="mt-4">
+      <div className="mt-4 min-w-0">
         <DateRangePicker value={range} onChange={setRange} />
       </div>
 
@@ -76,13 +76,13 @@ export default function FeedingStatsChart({ pondId, cropId }: FeedingStatsChartP
         <p className="mt-6 text-sm text-ink-muted">{t('chart.noDataInRange')}</p>
       ) : (
         <>
-          <div className="mt-4 overflow-x-auto">
-            <div className="min-w-[320px] h-72">
+          <div className="mt-4 min-w-0 overflow-x-auto">
+            <div className="h-72 w-full min-w-0">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={stats.series} barCategoryGap={barCategoryGap}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="period_label" />
-                  <YAxis unit=" kg" />
+                  <XAxis dataKey="period_label" tick={{ fontSize: 11 }} interval="preserveStartEnd" />
+                  <YAxis unit=" kg" width={48} tick={{ fontSize: 11 }} />
                   <Tooltip formatter={(value) => [`${value} kg`, t('chart.feedAmount')]} />
                   <Bar
                     dataKey="quantity_kg"

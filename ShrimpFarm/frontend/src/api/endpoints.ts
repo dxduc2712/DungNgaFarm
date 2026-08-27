@@ -22,8 +22,10 @@ export interface DashboardData {
     id: number
     name: string
     pond_type: string
+    record_mode: string
     active_crop_code: string | null
     latest_reading: SensorReading | null
+    last_iot_at: string | null
   }>
   low_stock: InventoryItem[]
   recent_alerts: SensorAlert[]
@@ -114,6 +116,7 @@ export interface SensorReading {
   temperature_c: string
   recorded_at: string
   source: 'manual' | 'iot'
+  last_iot_at?: string | null
 }
 
 export interface SensorAlert {

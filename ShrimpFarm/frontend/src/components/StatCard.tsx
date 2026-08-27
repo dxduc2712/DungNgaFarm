@@ -8,9 +8,9 @@ interface StatCardProps {
 
 export default function StatCard({ title, value, icon }: StatCardProps) {
   return (
-    <div className="rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]">
+    <div className="min-w-0 rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]">
       <div className="flex items-start justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <p className="text-sm font-medium text-ink-muted">{title}</p>
           <p className="mt-2 text-3xl font-bold tracking-tight text-forest">{value}</p>
         </div>

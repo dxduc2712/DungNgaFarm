@@ -7,6 +7,20 @@ export const SALINITY_MAX = 25
 export const TEMP_MIN = 26
 export const TEMP_MAX = 32
 
+/** Latest IoT reading must be newer than this to count as firmware-connected. */
+export const FIRMWARE_STALE_MS = 45_000
+
+export function expectsFirmwareSensors(recordMode?: string | null): boolean {
+  return recordMode === 'ALERT' || recordMode === 'ALL'
+}
+
+export function isFirmwareConnected(lastIotAt: string | null | undefined): boolean {
+  if (!lastIotAt) return false
+  const recorded = new Date(lastIotAt).getTime()
+  if (Number.isNaN(recorded)) return false
+  return Date.now() - recorded < FIRMWARE_STALE_MS
+}
+
 export function isOutOfRange(
   type: 'ph' | 'salinity' | 'temperature',
   value: number,

@@ -45,6 +45,38 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Native date/datetime/select controls report a large min-content width and
+   will blow out ~375px cards unless they are allowed to shrink. Long <option>
+   labels (e.g. crop code + species) also size the closed select to content
+   unless field-sizing is fixed. */
+input,
+select,
+textarea {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+}
+
+select {
+  field-sizing: fixed;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+input[type="datetime-local"],
+input[type="date"],
+input[type="time"] {
+  display: block;
+  width: 100%;
+}
+
+input[type="datetime-local"]::-webkit-datetime-edit,
+input[type="date"]::-webkit-datetime-edit,
+input[type="time"]::-webkit-datetime-edit {
+  min-width: 0;
+  max-width: 100%;
+}
+
 /* Soft aquaculture atmosphere for auth surfaces */
 .auth-atmosphere {
   background:

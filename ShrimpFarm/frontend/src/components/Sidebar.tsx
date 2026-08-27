@@ -142,17 +142,17 @@ export function MobileTopBar({
   const { t } = useTranslation()
 
   return (
-    <div className="sticky top-0 z-30 flex items-center justify-between border-b border-border-soft bg-card/95 px-4 py-3 backdrop-blur-sm md:hidden">
+    <div className="sticky top-0 z-30 flex items-center justify-between gap-2 border-b border-border-soft bg-card/95 px-4 py-3 backdrop-blur-sm md:hidden">
       <button
         type="button"
         onClick={onMenuClick}
-        className="rounded-xl p-2 text-ink transition hover:bg-surface"
+        className="shrink-0 rounded-xl p-2 text-ink transition hover:bg-surface"
         aria-label={t('common.openMenu')}
       >
         <Menu className="h-6 w-6" />
       </button>
-      <p className="font-semibold text-forest">{title}</p>
-      <BookOpen className="h-6 w-6 text-transparent" aria-hidden />
+      <p className="min-w-0 truncate text-center font-semibold text-forest">{title}</p>
+      <BookOpen className="h-6 w-6 shrink-0 text-transparent" aria-hidden />
     </div>
   )
 }

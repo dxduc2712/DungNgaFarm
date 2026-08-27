@@ -183,6 +183,8 @@
   },
   "sensor": {
     "noData": "Chưa có dữ liệu",
+    "lostConnection": "Mất kết nối",
+    "lastUpdated": "Cập nhật lúc {{time}}",
     "sourceIot": "Dữ liệu IoT",
     "sourceManual": "Dữ liệu thủ công",
     "salinity": "Độ mặn",

@@ -56,10 +56,10 @@ export default function PondDetail() {
   if (!pond) return <p className="text-ink-muted">{t('ponds.notFound')}</p>
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-ink">{pond.name}</h1>
+        <div className="min-w-0">
+          <h1 className="break-words text-2xl font-bold text-ink">{pond.name}</h1>
           <p className="text-ink-muted">{pondTypeLabel(pond.pond_type)}</p>
         </div>
         <Link
@@ -70,45 +70,54 @@ export default function PondDetail() {
         </Link>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid min-w-0 gap-4 md:grid-cols-2 *:min-w-0">
         <div className="rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]">
           <h2 className="font-semibold text-ink">{t('ponds.infoTitle')}</h2>
           <dl className="mt-3 space-y-2 text-sm text-ink-muted">
-            <div className="flex justify-between">
-              <dt>ID</dt>
+            <div className="flex justify-between gap-3">
+              <dt className="shrink-0">ID</dt>
               <dd>{pond.id}</dd>
             </div>
-            <div className="flex justify-between">
-              <dt>{t('common.area')}</dt>
+            <div className="flex justify-between gap-3">
+              <dt className="shrink-0">{t('common.area')}</dt>
               <dd>{pond.area_m2 ?? '—'} m²</dd>
             </div>
-            <div className="flex justify-between">
-              <dt>{t('common.depth')}</dt>
+            <div className="flex justify-between gap-3">
+              <dt className="shrink-0">{t('common.depth')}</dt>
               <dd>{pond.depth_m ?? '—'} m</dd>
             </div>
-            <div className="flex justify-between">
-              <dt>{t('common.status')}</dt>
-              <dd>{pond.active ? t('common.active') : t('common.inactive')}</dd>
+            <div className="flex justify-between gap-3">
+              <dt className="shrink-0">{t('common.status')}</dt>
+              <dd className="min-w-0 text-right">{pond.active ? t('common.active') : t('common.inactive')}</dd>
             </div>
           </dl>
         </div>
-        <SensorWidget pondId={pond.id} pondName={pond.name} reading={reading} linked={false} />
+        <SensorWidget
+          pondId={pond.id}
+          pondName={pond.name}
+          reading={reading}
+          lastIotAt={reading?.last_iot_at}
+          recordMode={pond.record_mode}
+          linked={false}
+        />
       </div>
 
       {crops.length > 1 && (
-        <label className="block text-sm">
+        <label className="block min-w-0 text-sm">
           <span className="text-ink-muted">{t('ponds.selectCrop')}</span>
-          <select
-            value={selectedCropId ?? ''}
-            onChange={(e) => setSelectedCropId(Number(e.target.value))}
-            className="mt-1 w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink md:max-w-sm"
-          >
-            {crops.map((crop) => (
-              <option key={crop.id} value={crop.id}>
-                {crop.code} ({crop.status})
-              </option>
-            ))}
-          </select>
+          <div className="mt-1 min-w-0 w-full max-w-full overflow-hidden md:max-w-sm">
+            <select
+              value={selectedCropId ?? ''}
+              onChange={(e) => setSelectedCropId(Number(e.target.value))}
+              className="block w-full min-w-0 max-w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
+            >
+              {crops.map((crop) => (
+                <option key={crop.id} value={crop.id}>
+                  {crop.code} ({crop.status})
+                </option>
+              ))}
+            </select>
+          </div>
         </label>
       )}
 
@@ -116,26 +125,26 @@ export default function PondDetail() {
         <FeedingStatsChart pondId={pond.id} cropId={selectedCropId} />
       )}
 
-      <section className="rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]">
+      <section className="min-w-0 rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]">
         <h2 className="text-lg font-semibold text-ink">{t('ponds.recentFeedingTitle')}</h2>
         {records.length === 0 ? (
           <p className="mt-3 text-sm text-ink-muted">{t('ponds.noFeedingRecords')}</p>
         ) : (
-          <div className="mt-3 overflow-x-auto">
+          <div className="mt-3 -mx-1 overflow-x-auto px-1">
             <table className="min-w-full text-sm">
               <thead>
                 <tr className="border-b text-left text-ink-muted">
-                  <th className="py-2 pr-4">{t('common.time')}</th>
+                  <th className="whitespace-nowrap py-2 pr-4">{t('common.time')}</th>
                   <th className="py-2 pr-4">{t('common.feed')}</th>
-                  <th className="py-2">{t('common.quantity')}</th>
+                  <th className="whitespace-nowrap py-2">{t('common.quantity')}</th>
                 </tr>
               </thead>
               <tbody>
                 {records.map((record) => (
                   <tr key={record.id} className="border-b border-border-soft">
-                    <td className="py-2 pr-4">{formatDateTime(record.feeding_time)}</td>
+                    <td className="whitespace-nowrap py-2 pr-4">{formatDateTime(record.feeding_time)}</td>
                     <td className="py-2 pr-4">{record.feed_name}</td>
-                    <td className="py-2">{record.quantity_kg} kg</td>
+                    <td className="whitespace-nowrap py-2">{record.quantity_kg} kg</td>
                   </tr>
                 ))}
               </tbody>

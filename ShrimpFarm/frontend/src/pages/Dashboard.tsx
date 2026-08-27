@@ -48,7 +48,7 @@ export default function Dashboard() {
   const greetingName = displayName?.trim()
 
   return (
-    <div className="space-y-7">
+    <div className="min-w-0 space-y-7">
       <header className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-sm font-medium text-aqua-dark">
@@ -77,13 +77,15 @@ export default function Dashboard() {
 
       <section>
         <h2 className="mb-4 text-lg font-semibold text-ink">{t('dashboard.environmentMetrics')}</h2>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-3 *:min-w-0">
           {data.ponds.map((pond) => (
             <SensorWidget
               key={pond.id}
               pondId={pond.id}
               pondName={pond.name}
               reading={pond.latest_reading}
+              lastIotAt={pond.last_iot_at}
+              recordMode={pond.record_mode}
             />
           ))}
         </div>
@@ -96,10 +98,10 @@ export default function Dashboard() {
             {data.low_stock.map((item) => (
               <li
                 key={item.id}
-                className="flex justify-between rounded-xl bg-red-50/80 px-3 py-2 text-red-700"
+                className="flex min-w-0 items-center justify-between gap-2 rounded-xl bg-red-50/80 px-3 py-2 text-red-700"
               >
-                <span className="font-medium">{item.feed_name}</span>
-                <span>{t('common.remainingKg', { quantity: item.quantity })}</span>
+                <span className="min-w-0 truncate font-medium">{item.feed_name}</span>
+                <span className="shrink-0">{t('common.remainingKg', { quantity: item.quantity })}</span>
               </li>
             ))}
           </ul>

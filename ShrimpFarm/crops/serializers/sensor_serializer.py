@@ -3,6 +3,12 @@ from rest_framework import serializers
 from ..models import SensorAlert, SensorReading
 
 
+def isoformat_datetime(value):
+    if value is None:
+        return None
+    return serializers.DateTimeField().to_representation(value)
+
+
 class SensorReadingSerializer(serializers.ModelSerializer):
     pond_name = serializers.CharField(source="pond.name", read_only=True)
 

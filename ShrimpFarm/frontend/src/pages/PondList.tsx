@@ -23,22 +23,22 @@ export default function PondList() {
         <p className="mt-1 text-ink-muted">{t('ponds.subtitle')}</p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid min-w-0 gap-4 md:grid-cols-2 *:min-w-0">
         {ponds.map((pond) => (
           <Link
             key={pond.id}
             to={`/ao/${pond.id}`}
-            className="rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)] transition hover:shadow-[var(--shadow-card-hover)]"
+            className="min-w-0 rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)] transition hover:shadow-[var(--shadow-card-hover)]"
           >
             <div className="flex items-start justify-between gap-3">
-              <div>
-                <h2 className="text-lg font-semibold text-ink">{pond.name}</h2>
+              <div className="min-w-0">
+                <h2 className="truncate text-lg font-semibold text-ink">{pond.name}</h2>
                 <p className="text-sm text-ink-muted">
                   {t('ponds.firmwareId', { id: pond.id })} · {pondTypeLabel(pond.pond_type)}
                 </p>
               </div>
               <span
-                className={`rounded-full px-2.5 py-1 text-xs font-medium ${
+                className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${
                   pond.active ? 'bg-aqua-soft text-aqua-dark' : 'bg-surface-muted text-ink-muted'
                 }`}
               >

@@ -42,10 +42,10 @@ export default function Alerts() {
               key={alert.id}
               className="rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]"
             >
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="font-semibold text-ink">{alert.pond_name}</p>
-                  <p className="mt-1 text-sm text-ink-muted">{alert.message}</p>
+              <div className="flex min-w-0 flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="break-words font-semibold text-ink">{alert.pond_name}</p>
+                  <p className="mt-1 break-words text-sm text-ink-muted">{alert.message}</p>
                   <p className="mt-2 text-xs text-ink-faint">
                     {formatDateTime(alert.created_at)} — {alert.crop_code}
                   </p>

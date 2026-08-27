@@ -20,12 +20,12 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-surface">
       {/* Same shell for every route — avoid width jump when opening /admin */}
-      <div id="app-shell" className="mx-auto flex min-h-screen max-w-7xl">
+      <div id="app-shell" className="mx-auto flex min-h-screen w-full max-w-7xl">
         <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} onLogout={handleLogout} />
         <div className="flex min-h-0 min-w-0 flex-1 flex-col">
           <MobileTopBar title={t('common.appName')} onMenuClick={() => setMenuOpen(true)} />
           <main
-            className={`min-h-0 flex-1 p-4 md:p-6 lg:p-8 ${
+            className={`min-h-0 min-w-0 flex-1 overflow-x-clip p-4 md:p-6 lg:p-8 ${
               isAdminPage ? 'flex flex-col overflow-hidden' : ''
             }`}
           >

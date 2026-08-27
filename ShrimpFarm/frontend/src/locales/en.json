@@ -183,6 +183,8 @@
   },
   "sensor": {
     "noData": "No data available",
+    "lostConnection": "Lost connection",
+    "lastUpdated": "Updated {{time}}",
     "sourceIot": "IoT data",
     "sourceManual": "Manual data",
     "salinity": "Salinity",

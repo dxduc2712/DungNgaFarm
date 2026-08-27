@@ -10,8 +10,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from ..filters import PondFilter
-from ..models import Crop, FeedingPlan, FeedingRecord, Pond
+from ..models import Crop, FeedingPlan, FeedingRecord, Pond, SensorReading
 from ..serializers import PondSerializer, SensorReadingSerializer
+from ..serializers.sensor_serializer import isoformat_datetime
 
 
 def _parse_date(value, default):
@@ -62,7 +63,19 @@ class PondViewSet(viewsets.ModelViewSet):
         reading = pond.sensor_readings.order_by("-recorded_at", "-id").first()
         if not reading:
             return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(SensorReadingSerializer(reading).data)
+        data = SensorReadingSerializer(reading).data
+        if reading.source == SensorReading.Source.IOT:
+            last_iot_at = reading.recorded_at
+        else:
+            last_iot = (
+                pond.sensor_readings.filter(source=SensorReading.Source.IOT)
+                .order_by("-recorded_at", "-id")
+                .only("recorded_at")
+                .first()
+            )
+            last_iot_at = last_iot.recorded_at if last_iot else None
+        data["last_iot_at"] = isoformat_datetime(last_iot_at)
+        return Response(data)
 
     @action(detail=True, methods=["get"], url_path="feeding-stats")
     def feeding_stats(self, request, pk=None):
