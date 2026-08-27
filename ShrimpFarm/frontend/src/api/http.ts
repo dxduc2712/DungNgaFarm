@@ -44,6 +44,15 @@ export interface PaginatedResponse<T> {
   results: T[]
 }
 
+export async function fetchPage<T>(url: string, params?: Record<string, unknown>): Promise<T[]> {
+  const response = await api.get<PaginatedResponse<T> | T[]>(url, { params })
+  const data = response.data
+  if (Array.isArray(data)) {
+    return data
+  }
+  return data.results
+}
+
 export async function fetchAllPages<T>(url: string, params?: Record<string, unknown>): Promise<T[]> {
   const items: T[] = []
   let nextUrl: string | null = url

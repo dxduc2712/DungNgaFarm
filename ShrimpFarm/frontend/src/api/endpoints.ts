@@ -1,4 +1,4 @@
-import api, { fetchAllPages } from './http'
+import api, { fetchAllPages, fetchPage } from './http'
 
 export interface LoginResponse {
   access: string
@@ -202,40 +202,51 @@ export const endpoints = {
 
   dashboard: () => api.get<DashboardData>('/dashboard/'),
 
-  ponds: () => fetchAllPages<Pond>('/ponds/'),
+  ponds: () => fetchAllPages<Pond>('/ponds/', { page_size: 100 }),
   pond: (id: number) => api.get<Pond>(`/ponds/${id}/`),
   createPond: (data: Partial<Pond>) => api.post<Pond>('/ponds/', data),
   updatePond: (id: number, data: Partial<Pond>) => api.patch<Pond>(`/ponds/${id}/`, data),
 
-  crops: (params?: Record<string, unknown>) => fetchAllPages<Crop>('/crops/', params),
+  crops: (params?: Record<string, unknown>) =>
+    fetchAllPages<Crop>('/crops/', { page_size: 100, ...params }),
 
   feedingRecords: (params?: Record<string, unknown>) =>
-    fetchAllPages<FeedingRecord>('/feeding-records/', params),
+    fetchPage<FeedingRecord>('/feeding-records/', params),
   createFeedingRecord: (data: Partial<FeedingRecord>) =>
     api.post<FeedingRecord>('/feeding-records/', data),
 
   waterTreatments: (params?: Record<string, unknown>) =>
-    fetchAllPages<WaterTreatment>('/water-treatments/', params),
+    fetchPage<WaterTreatment>('/water-treatments/', params),
   createWaterTreatment: (data: Partial<WaterTreatment>) =>
     api.post<WaterTreatment>('/water-treatments/', data),
 
   waterExchanges: (params?: Record<string, unknown>) =>
-    fetchAllPages<WaterExchange>('/water-exchanges/', params),
+    fetchPage<WaterExchange>('/water-exchanges/', params),
   createWaterExchange: (data: Partial<WaterExchange>) =>
     api.post<WaterExchange>('/water-exchanges/', data),
 
-  inventory: () => fetchAllPages<InventoryItem>('/inventory-items/'),
-  feeds: () => fetchAllPages<Feed>('/feeds/'),
+  inventory: () => fetchAllPages<InventoryItem>('/inventory-items/', { page_size: 100 }),
+  feeds: () => fetchAllPages<Feed>('/feeds/', { page_size: 100 }),
+
+  latestPondReading: async (pondId: number): Promise<SensorReading | null> => {
+    const response = await api.get<SensorReading>(`/ponds/${pondId}/latest-reading/`)
+    if (response.status === 204 || !response.data) {
+      return null
+    }
+    return response.data
+  },
 
   sensorReadings: (params?: Record<string, unknown>) =>
-    fetchAllPages<SensorReading>('/sensor-readings/', params),
+    fetchPage<SensorReading>('/sensor-readings/', params),
 
   sensorAlerts: (params?: Record<string, unknown>) =>
-    fetchAllPages<SensorAlert>('/sensor-alerts/', params),
+    fetchPage<SensorAlert>('/sensor-alerts/', { page_size: 50, ...params }),
   resolveAlert: (id: number) => api.post<SensorAlert>(`/sensor-alerts/${id}/resolve/`),
 
   feedingStats: (pondId: number, params: Record<string, string>) =>
     api.get<FeedingStats>(`/ponds/${pondId}/feeding-stats/`, { params }),
 
-  farms: () => fetchAllPages<{ id: number; name: string; address: string }>('/farms/'),
+  farms: () => fetchAllPages<{ id: number; name: string; address: string }>('/farms/', {
+    page_size: 100,
+  }),
 }

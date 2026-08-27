@@ -20,31 +20,36 @@ export default function PondDetail() {
 
   useEffect(() => {
     if (!pondId) return
+    let cancelled = false
 
     Promise.all([
       endpoints.pond(pondId),
-      endpoints.sensorReadings({ pond: pondId }),
+      endpoints.latestPondReading(pondId),
       endpoints.crops({ pond: pondId }),
-    ]).then(async ([pondRes, readings, cropList]) => {
-      setPond(pondRes.data)
-      setReading(readings[0] ?? null)
-      setCrops(cropList)
-      const activeCrop =
-        cropList.find((crop) => crop.status === 'ACTIVE') ?? cropList[0] ?? null
-      setSelectedCropId(activeCrop?.id ?? null)
+    ])
+      .then(([pondRes, latest, cropList]) => {
+        if (cancelled) return
+        setPond(pondRes.data)
+        setReading(latest)
+        setCrops(cropList)
+        const activeCrop =
+          cropList.find((crop) => crop.status === 'ACTIVE') ?? cropList[0] ?? null
+        setSelectedCropId(activeCrop?.id ?? null)
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
 
-      if (activeCrop) {
-        const feedingRecords = await endpoints.feedingRecords({ crop: activeCrop.id })
-        setRecords(feedingRecords.slice(0, 10))
-      }
-    }).finally(() => setLoading(false))
+    return () => {
+      cancelled = true
+    }
   }, [pondId])
 
   useEffect(() => {
     if (!selectedCropId) return
-    endpoints.feedingRecords({ crop: selectedCropId }).then((data) => {
-      setRecords(data.slice(0, 10))
-    })
+    endpoints
+      .feedingRecords({ crop: selectedCropId, page_size: 10 })
+      .then(setRecords)
   }, [selectedCropId])
 
   if (loading) return <p className="text-ink-muted">{t('common.loading')}</p>
@@ -87,7 +92,7 @@ export default function PondDetail() {
             </div>
           </dl>
         </div>
-        <SensorWidget pondName={pond.name} reading={reading} />
+        <SensorWidget pondId={pond.id} pondName={pond.name} reading={reading} linked={false} />
       </div>
 
       {crops.length > 1 && (

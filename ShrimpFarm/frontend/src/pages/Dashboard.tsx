@@ -30,7 +30,7 @@ export default function Dashboard() {
     }
 
     load(true)
-    const timer = window.setInterval(() => load(false), 5000)
+    const timer = window.setInterval(() => load(false), 4000)
     return () => {
       cancelled = true
       window.clearInterval(timer)

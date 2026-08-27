@@ -11,7 +11,7 @@ from rest_framework.response import Response
 
 from ..filters import PondFilter
 from ..models import Crop, FeedingPlan, FeedingRecord, Pond
-from ..serializers import PondSerializer
+from ..serializers import PondSerializer, SensorReadingSerializer
 
 
 def _parse_date(value, default):
@@ -48,12 +48,21 @@ def _recommended_kg_for_crop(crop):
 
 
 class PondViewSet(viewsets.ModelViewSet):
-    queryset = Pond.objects.select_related("farm").all()
+    queryset = Pond.objects.select_related("farm").order_by("name", "id")
     serializer_class = PondSerializer
     permission_classes = [IsAuthenticated]
     filterset_class = PondFilter
     search_fields = ["name"]
     ordering_fields = ["name", "id"]
+    ordering = ["name", "id"]
+
+    @action(detail=True, methods=["get"], url_path="latest-reading")
+    def latest_reading(self, request, pk=None):
+        pond = self.get_object()
+        reading = pond.sensor_readings.order_by("-recorded_at", "-id").first()
+        if not reading:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(SensorReadingSerializer(reading).data)
 
     @action(detail=True, methods=["get"], url_path="feeding-stats")
     def feeding_stats(self, request, pk=None):

@@ -32,14 +32,28 @@ export default function FeedInventory() {
   }
 
   useEffect(() => {
-    loadInventory().finally(() => setLoading(false))
+    let cancelled = false
+    Promise.all([
+      endpoints.inventory(),
+      endpoints.feeds(),
+      endpoints.ponds(),
+    ])
+      .then(([items, feedList, pondList]) => {
+        if (cancelled) return
+        setInventory(items)
+        setFeeds(feedList)
+        setPonds(pondList.filter((pond) => pond.pond_type === 'GROW'))
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   useEffect(() => {
-    if (!form.pond) {
-      setCrops([])
-      return
-    }
+    if (!form.pond) return
     endpoints.crops({ pond: form.pond, status: 'ACTIVE' }).then(setCrops)
   }, [form.pond])
 
@@ -96,7 +110,11 @@ export default function FeedInventory() {
             <span className="text-ink-muted">{t('common.pond')}</span>
             <select
               value={form.pond}
-              onChange={(e) => setForm({ ...form, pond: e.target.value, crop: '' })}
+              onChange={(e) => {
+                const pond = e.target.value
+                setForm({ ...form, pond, crop: '' })
+                if (!pond) setCrops([])
+              }}
               className="mt-1 w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
               required
             >

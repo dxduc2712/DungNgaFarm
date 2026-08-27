@@ -6,6 +6,9 @@ class Farm(models.Model):
     name = models.CharField(max_length=200)
     address = models.TextField()
 
+    class Meta:
+        ordering = ["name", "id"]
+
     def __str__(self):
         return self.name
     
@@ -56,6 +59,9 @@ class Pond(models.Model):
 
     active = models.BooleanField(default=True)
 
+    class Meta:
+        ordering = ["name", "id"]
+
     def __str__(self):
         return self.name
     
@@ -94,6 +100,10 @@ class Crop(models.Model):
         choices=Status.choices,
         default=Status.ACTIVE
     )
+
+    class Meta:
+        ordering = ["-start_date", "id"]
+
     def save(self, *args, **kwargs):
         if not self.pk:
             super().save(*args, **kwargs)  # Get ID first
@@ -147,6 +157,9 @@ class Feed(models.Model):
         decimal_places=2
     )
 
+    class Meta:
+        ordering = ["name", "id"]
+
     def __str__(self):
         return self.name
     
@@ -162,6 +175,11 @@ class InventoryItem(models.Model):
     updated_at = models.DateTimeField(
         auto_now_add=True
     )
+
+    class Meta:
+        ordering = ["id"]
+
+
 class FeedingPlan(models.Model):
 
     crop = models.ForeignKey(
@@ -200,6 +218,9 @@ class FeedingRecord(models.Model):
 
     note = models.TextField(blank=True)
 
+    class Meta:
+        ordering = ["-feeding_time", "-id"]
+
 # Crop
 #  └── many FeedingRecord
 
@@ -224,6 +245,11 @@ class WaterTreatment(models.Model):
     treatment_time = models.DateTimeField()
 
     note = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["-treatment_time", "-id"]
+
+
 class WaterExchange(models.Model):
 
     class Action(models.TextChoices):
@@ -249,6 +275,10 @@ class WaterExchange(models.Model):
     exchange_time = models.DateTimeField()
 
     note = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["-exchange_time", "-id"]
+
 
 class Harvest(models.Model):
 
@@ -332,6 +362,9 @@ class SensorAlert(models.Model):
     )
     resolved = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ["-created_at", "-id"]
+
 
 class SensorReading(models.Model):
 
@@ -355,7 +388,7 @@ class SensorReading(models.Model):
     )
 
     class Meta:
-        ordering = ["-recorded_at"]
+        ordering = ["-recorded_at", "-id"]
 
     def __str__(self):
         return f"{self.pond.name} @ {self.recorded_at}"

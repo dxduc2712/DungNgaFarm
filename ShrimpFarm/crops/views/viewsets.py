@@ -48,7 +48,7 @@ from .stats_view import PondViewSet
 
 
 class FarmViewSet(viewsets.ModelViewSet):
-    queryset = Farm.objects.all()
+    queryset = Farm.objects.order_by("name", "id")
     serializer_class = FarmSerializer
     permission_classes = [IsAuthenticated]
     search_fields = ["name", "address"]
@@ -56,7 +56,7 @@ class FarmViewSet(viewsets.ModelViewSet):
 
 
 class CropViewSet(viewsets.ModelViewSet):
-    queryset = Crop.objects.select_related("pond").all()
+    queryset = Crop.objects.select_related("pond").order_by("-start_date", "id")
     serializer_class = CropSerializer
     permission_classes = [IsAuthenticated]
     filterset_class = CropFilter
@@ -65,35 +65,37 @@ class CropViewSet(viewsets.ModelViewSet):
 
 
 class StockingViewSet(viewsets.ModelViewSet):
-    queryset = Stocking.objects.select_related("crop").all()
+    queryset = Stocking.objects.select_related("crop").order_by("-id")
     serializer_class = StockingSerializer
     permission_classes = [IsAuthenticated]
     filterset_fields = ["crop"]
 
 
 class FeedViewSet(viewsets.ModelViewSet):
-    queryset = Feed.objects.all()
+    queryset = Feed.objects.order_by("name", "id")
     serializer_class = FeedSerializer
     permission_classes = [IsAuthenticated]
     search_fields = ["name", "brand"]
 
 
 class InventoryItemViewSet(viewsets.ModelViewSet):
-    queryset = InventoryItem.objects.select_related("feed").all()
+    queryset = InventoryItem.objects.select_related("feed").order_by("id")
     serializer_class = InventoryItemSerializer
     permission_classes = [IsAuthenticated]
     filterset_fields = ["feed"]
 
 
 class FeedingPlanViewSet(viewsets.ModelViewSet):
-    queryset = FeedingPlan.objects.select_related("crop").all()
+    queryset = FeedingPlan.objects.select_related("crop").order_by("id")
     serializer_class = FeedingPlanSerializer
     permission_classes = [IsAuthenticated]
     filterset_fields = ["crop"]
 
 
 class FeedingRecordViewSet(viewsets.ModelViewSet):
-    queryset = FeedingRecord.objects.select_related("crop", "feed").all()
+    queryset = FeedingRecord.objects.select_related("crop", "feed").order_by(
+        "-feeding_time", "-id"
+    )
     serializer_class = FeedingRecordSerializer
     permission_classes = [IsAuthenticated]
     filterset_class = FeedingRecordFilter
@@ -101,7 +103,9 @@ class FeedingRecordViewSet(viewsets.ModelViewSet):
 
 
 class WaterTreatmentViewSet(viewsets.ModelViewSet):
-    queryset = WaterTreatment.objects.select_related("crop").all()
+    queryset = WaterTreatment.objects.select_related("crop").order_by(
+        "-treatment_time", "-id"
+    )
     serializer_class = WaterTreatmentSerializer
     permission_classes = [IsAuthenticated]
     filterset_class = WaterTreatmentFilter
@@ -109,7 +113,9 @@ class WaterTreatmentViewSet(viewsets.ModelViewSet):
 
 
 class WaterExchangeViewSet(viewsets.ModelViewSet):
-    queryset = WaterExchange.objects.select_related("crop").all()
+    queryset = WaterExchange.objects.select_related("crop").order_by(
+        "-exchange_time", "-id"
+    )
     serializer_class = WaterExchangeSerializer
     permission_classes = [IsAuthenticated]
     filterset_class = WaterExchangeFilter
@@ -117,21 +123,23 @@ class WaterExchangeViewSet(viewsets.ModelViewSet):
 
 
 class HarvestViewSet(viewsets.ModelViewSet):
-    queryset = Harvest.objects.select_related("crop").all()
+    queryset = Harvest.objects.select_related("crop").order_by("-harvest_date", "-id")
     serializer_class = HarvestSerializer
     permission_classes = [IsAuthenticated]
     filterset_fields = ["crop", "harvest_type"]
 
 
 class ExpenseViewSet(viewsets.ModelViewSet):
-    queryset = Expense.objects.select_related("crop").all()
+    queryset = Expense.objects.select_related("crop").order_by("-expense_date", "-id")
     serializer_class = ExpenseSerializer
     permission_classes = [IsAuthenticated]
     filterset_fields = ["crop", "category"]
 
 
 class SensorReadingViewSet(viewsets.ModelViewSet):
-    queryset = SensorReading.objects.select_related("pond").all()
+    queryset = SensorReading.objects.select_related("pond").order_by(
+        "-recorded_at", "-id"
+    )
     serializer_class = SensorReadingSerializer
     permission_classes = [IsAuthenticated]
     filterset_class = SensorReadingFilter
@@ -139,7 +147,9 @@ class SensorReadingViewSet(viewsets.ModelViewSet):
 
 
 class SensorAlertViewSet(viewsets.ModelViewSet):
-    queryset = SensorAlert.objects.select_related("pond", "crop").all()
+    queryset = SensorAlert.objects.select_related("pond", "crop").order_by(
+        "-created_at", "-id"
+    )
     serializer_class = SensorAlertSerializer
     permission_classes = [IsAuthenticated]
     filterset_class = SensorAlertFilter
