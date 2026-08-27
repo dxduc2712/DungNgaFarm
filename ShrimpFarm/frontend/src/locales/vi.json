@@ -172,7 +172,8 @@
     "lowStock": "Sắp hết",
     "feedingSection": "Cho ăn",
     "recordSuccess": "Đã ghi cho ăn và trừ kho.",
-    "submitFeeding": "Ghi cho ăn"
+    "submitFeeding": "Ghi cho ăn",
+    "viewPondDetail": "Chi tiết ao"
   },
   "alerts": {
     "title": "Cảnh báo",

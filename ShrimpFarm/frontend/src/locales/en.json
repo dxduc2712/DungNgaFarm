@@ -172,7 +172,8 @@
     "lowStock": "Low stock",
     "feedingSection": "Feeding",
     "recordSuccess": "Feeding recorded and inventory updated.",
-    "submitFeeding": "Record feeding"
+    "submitFeeding": "Record feeding",
+    "viewPondDetail": "Pond details"
   },
   "alerts": {
     "title": "Alerts",

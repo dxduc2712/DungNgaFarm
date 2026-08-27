@@ -1,4 +1,5 @@
 import { type FormEvent, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { Crop, Feed, InventoryItem, Pond } from '../api/endpoints'
 import { endpoints } from '../api/endpoints'
@@ -107,22 +108,40 @@ export default function FeedInventory() {
               ))}
             </select>
           </label>
-          <label className="block text-sm">
+          <div className="block text-sm">
             <span className="text-ink-muted">{t('common.crop')}</span>
-            <select
-              value={form.crop}
-              onChange={(e) => setForm({ ...form, crop: e.target.value })}
-              className="mt-1 w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
-              required
-            >
-              <option value="">{t('common.selectCrop')}</option>
-              {crops.map((crop) => (
-                <option key={crop.id} value={crop.id}>
-                  {crop.code}
-                </option>
-              ))}
-            </select>
-          </label>
+            <div className="mt-1 flex gap-2">
+              <select
+                value={form.crop}
+                onChange={(e) => setForm({ ...form, crop: e.target.value })}
+                className="min-w-0 flex-1 rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
+                required
+              >
+                <option value="">{t('common.selectCrop')}</option>
+                {crops.map((crop) => (
+                  <option key={crop.id} value={crop.id}>
+                    {crop.code} — {crop.shrimp_species}
+                  </option>
+                ))}
+              </select>
+              {form.pond ? (
+                <Link
+                  to={`/ao/${form.pond}`}
+                  className="inline-flex shrink-0 items-center whitespace-nowrap rounded-xl bg-forest px-3 py-2 text-sm font-semibold text-white transition hover:bg-forest-deep"
+                >
+                  {t('feedInventory.viewPondDetail')}
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  className="inline-flex shrink-0 items-center whitespace-nowrap rounded-xl bg-forest px-3 py-2 text-sm font-semibold text-white opacity-50"
+                >
+                  {t('feedInventory.viewPondDetail')}
+                </button>
+              )}
+            </div>
+          </div>
           <label className="block text-sm">
             <span className="text-ink-muted">{t('common.feed')}</span>
             <select
