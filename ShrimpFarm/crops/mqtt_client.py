@@ -1,9 +1,11 @@
 import json
 import logging
 import os
+import socket
 import ssl
 import sys
 import threading
+import time
 
 from django.conf import settings
 from django.db import close_old_connections
@@ -67,16 +69,16 @@ def start_mqtt_subscriber(blocking=False, stdout=None):
     default_pond_id = settings.MQTT_DEFAULT_POND_ID
 
     def log(message):
+        print(message, flush=True)
         if stdout:
             stdout.write(message)
-        else:
-            logger.info(message)
+        logger.info(message)
 
     def log_err(message):
+        print(message, flush=True)
         if stdout:
             stdout.write(message)
-        else:
-            logger.error(message)
+        logger.error(message)
 
     def on_connect(client, userdata, flags, reason_code, properties):
         if reason_code.is_failure:
@@ -84,6 +86,9 @@ def start_mqtt_subscriber(blocking=False, stdout=None):
             return
         client.subscribe(topic)
         log(f"Subscribed to {topic}")
+
+    def on_disconnect(client, userdata, flags, reason_code, properties):
+        log_err(f"MQTT disconnected: {reason_code}")
 
     def on_message(client, userdata, msg):
         close_old_connections()
@@ -114,13 +119,23 @@ def start_mqtt_subscriber(blocking=False, stdout=None):
     client.username_pw_set(settings.MQTT_USER, settings.MQTT_PASSWORD)
     client.tls_set(cert_reqs=ssl.CERT_REQUIRED)
     client.on_connect = on_connect
+    client.on_disconnect = on_disconnect
     client.on_message = on_message
+    client.reconnect_delay_set(min_delay=1, max_delay=30)
     client.connect_async(host, port, keepalive=60)
 
     log(f"MQTT bridge → {host}:{port} topic={topic} default pond={default_pond_id}")
 
     if blocking:
-        client.loop_forever()
+        while True:
+            try:
+                # retry_first_connection: Render DNS is often not ready at boot
+                client.loop_forever(retry_first_connection=True)
+            except (OSError, socket.gaierror, TimeoutError) as exc:
+                log_err(
+                    f"MQTT connection error ({host}:{port}): {exc}; retry in 5s"
+                )
+                time.sleep(5)
         return client
 
     client.loop_start()
@@ -155,17 +170,27 @@ def start_mqtt_subscriber_in_process():
     if _started:
         return
     if not mqtt_configured():
+        print("MQTT not configured; pond IoT readings will not be saved", flush=True)
         logger.warning("MQTT not configured; pond IoT readings will not be saved")
         return
     if not _should_start_mqtt_in_process():
         return
 
+    def _run():
+        while True:
+            try:
+                start_mqtt_subscriber(blocking=True)
+            except Exception as exc:
+                print(f"MQTT thread crashed: {exc}; retry in 10s", flush=True)
+                logger.exception("MQTT thread crashed")
+                time.sleep(10)
+
     _started = True
     thread = threading.Thread(
-        target=start_mqtt_subscriber,
-        kwargs={"blocking": True},
+        target=_run,
         name="mqtt-sensor-bridge",
         daemon=True,
     )
     thread.start()
+    print("MQTT sensor subscriber thread started", flush=True)
     logger.info("MQTT sensor subscriber thread started")

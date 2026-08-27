@@ -208,7 +208,12 @@ else:
     )
 
 # HiveMQ Cloud — ESP32 publishes here; mqtt_sensor_bridge writes SensorReading
-MQTT_HOST = os.getenv("MQTT_HOST", "")
+_mqtt_host = os.getenv("MQTT_HOST", "").strip().strip('"').strip("'")
+for _prefix in ("mqtts://", "mqtt://", "ssl://", "https://", "http://"):
+    if _mqtt_host.lower().startswith(_prefix):
+        _mqtt_host = _mqtt_host[len(_prefix) :]
+        break
+MQTT_HOST = _mqtt_host.split("/")[0].strip()
 MQTT_PORT = int(os.getenv("MQTT_PORT", "8883"))
 MQTT_USER = os.getenv("MQTT_USER", "")
 MQTT_PASSWORD = os.getenv("MQTT_PASSWORD", "")
