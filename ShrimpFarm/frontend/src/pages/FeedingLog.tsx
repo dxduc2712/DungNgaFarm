@@ -12,6 +12,27 @@ import type {
 import { endpoints } from '../api/endpoints'
 import { formatDateTime } from '../utils/sensors'
 
+const emptyFeedingForm = () => ({
+  feed: '',
+  quantity_kg: '',
+  feeding_time: '',
+  note: '',
+})
+
+const emptyTreatmentForm = () => ({
+  product_name: '',
+  quantity: '',
+  treatment_time: '',
+  note: '',
+})
+
+const emptyExchangeForm = () => ({
+  action: 'PUMP_IN',
+  percentage: '',
+  exchange_time: '',
+  note: '',
+})
+
 export default function FeedingLog() {
   const { t } = useTranslation()
   const { id } = useParams()
@@ -25,24 +46,9 @@ export default function FeedingLog() {
   const [message, setMessage] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const [feedingForm, setFeedingForm] = useState({
-    feed: '',
-    quantity_kg: '',
-    feeding_time: new Date().toISOString().slice(0, 16),
-    note: '',
-  })
-  const [treatmentForm, setTreatmentForm] = useState({
-    product_name: '',
-    quantity: '',
-    treatment_time: new Date().toISOString().slice(0, 16),
-    note: '',
-  })
-  const [exchangeForm, setExchangeForm] = useState({
-    action: 'PUMP_IN',
-    percentage: '',
-    exchange_time: new Date().toISOString().slice(0, 16),
-    note: '',
-  })
+  const [feedingForm, setFeedingForm] = useState(emptyFeedingForm)
+  const [treatmentForm, setTreatmentForm] = useState(emptyTreatmentForm)
+  const [exchangeForm, setExchangeForm] = useState(emptyExchangeForm)
 
   const loadData = async () => {
     const [pondRes, cropList, feedList] = await Promise.all([
@@ -56,9 +62,9 @@ export default function FeedingLog() {
     setFeeds(feedList)
     if (activeCrop) {
       const [records, treatmentList, exchangeList] = await Promise.all([
-        endpoints.feedingRecords({ crop: activeCrop.id }),
-        endpoints.waterTreatments({ crop: activeCrop.id }),
-        endpoints.waterExchanges({ crop: activeCrop.id }),
+        endpoints.feedingRecords({ crop: activeCrop.id, page_size: 50 }),
+        endpoints.waterTreatments({ crop: activeCrop.id, page_size: 50 }),
+        endpoints.waterExchanges({ crop: activeCrop.id, page_size: 50 }),
       ])
       setFeedingRecords(records)
       setTreatments(treatmentList)
@@ -67,7 +73,36 @@ export default function FeedingLog() {
   }
 
   useEffect(() => {
-    loadData().finally(() => setLoading(false))
+    let cancelled = false
+    Promise.all([
+      endpoints.pond(pondId),
+      endpoints.crops({ pond: pondId, status: 'ACTIVE' }),
+      endpoints.feeds(),
+    ])
+      .then(async ([pondRes, cropList, feedList]) => {
+        if (cancelled) return
+        setPond(pondRes.data)
+        const activeCrop = cropList[0] ?? null
+        setCrop(activeCrop)
+        setFeeds(feedList)
+        if (activeCrop) {
+          const [records, treatmentList, exchangeList] = await Promise.all([
+            endpoints.feedingRecords({ crop: activeCrop.id, page_size: 50 }),
+            endpoints.waterTreatments({ crop: activeCrop.id, page_size: 50 }),
+            endpoints.waterExchanges({ crop: activeCrop.id, page_size: 50 }),
+          ])
+          if (cancelled) return
+          setFeedingRecords(records)
+          setTreatments(treatmentList)
+          setExchanges(exchangeList)
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
   }, [pondId])
 
   const submitFeeding = async (event: FormEvent) => {
@@ -81,6 +116,7 @@ export default function FeedingLog() {
       note: feedingForm.note,
     })
     setMessage(t('feedingLog.recordFeedingSuccess'))
+    setFeedingForm(emptyFeedingForm())
     await loadData()
   }
 
@@ -95,6 +131,7 @@ export default function FeedingLog() {
       note: treatmentForm.note,
     })
     setMessage(t('feedingLog.recordTreatmentSuccess'))
+    setTreatmentForm(emptyTreatmentForm())
     await loadData()
   }
 
@@ -109,6 +146,7 @@ export default function FeedingLog() {
       note: exchangeForm.note,
     })
     setMessage(t('feedingLog.recordExchangeSuccess'))
+    setExchangeForm(emptyExchangeForm())
     await loadData()
   }
 
