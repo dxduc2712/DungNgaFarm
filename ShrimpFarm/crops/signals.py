@@ -3,7 +3,7 @@ from decimal import Decimal
 from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
 
-from .models import FeedingRecord, InventoryItem
+from .models import FeedingRecord, InventoryItem, Feed
 
 
 def _get_inventory_for_feed(feed):
@@ -53,8 +53,6 @@ def adjust_inventory_on_feeding_save(sender, instance, created, **kwargs):
     old_feed_id = getattr(instance, "_old_feed_id", None)
     if old_qty is None:
         return
-
-    from .models import Feed
 
     if old_feed_id and old_feed_id != instance.feed_id:
         old_feed = Feed.objects.get(pk=old_feed_id)

@@ -22,35 +22,38 @@ export default function Alerts() {
     loadAlerts()
   }
 
-  if (loading) return <p className="text-gray-500">{t('common.loading')}</p>
+  if (loading) return <p className="text-ink-muted">{t('common.loading')}</p>
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">{t('alerts.title')}</h1>
-        <p className="text-gray-500">{t('alerts.subtitle')}</p>
+        <h1 className="text-2xl font-bold tracking-tight text-ink">{t('alerts.title')}</h1>
+        <p className="mt-1 text-ink-muted">{t('alerts.subtitle')}</p>
       </div>
 
       {alerts.length === 0 ? (
-        <div className="rounded-xl bg-white p-6 text-center shadow-sm">
-          <p className="text-gray-500">{t('alerts.empty')}</p>
+        <div className="rounded-2xl border border-border-soft bg-card p-6 text-center shadow-[var(--shadow-card)]">
+          <p className="text-ink-muted">{t('alerts.empty')}</p>
         </div>
       ) : (
         <div className="space-y-3">
           {alerts.map((alert) => (
-            <div key={alert.id} className="rounded-xl bg-white p-4 shadow-sm">
+            <div
+              key={alert.id}
+              className="rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]"
+            >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="font-semibold text-gray-900">{alert.pond_name}</p>
-                  <p className="mt-1 text-sm text-gray-700">{alert.message}</p>
-                  <p className="mt-2 text-xs text-gray-500">
+                  <p className="font-semibold text-ink">{alert.pond_name}</p>
+                  <p className="mt-1 text-sm text-ink-muted">{alert.message}</p>
+                  <p className="mt-2 text-xs text-ink-faint">
                     {formatDateTime(alert.created_at)} — {alert.crop_code}
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => resolve(alert.id)}
-                  className="rounded-lg bg-teal-600 px-3 py-2 text-sm font-medium text-white hover:bg-teal-700"
+                  className="rounded-xl bg-forest px-3 py-2 text-sm font-semibold text-white transition hover:bg-forest-deep"
                 >
                   {t('alerts.resolve')}
                 </button>

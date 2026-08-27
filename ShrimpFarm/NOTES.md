@@ -18,7 +18,8 @@ Out-of-range values (e.g. pH 6.5) auto-create `SensorAlert` rows during seed.
 
 ## Phase 2 IoT (planned)
 
-- ESP32 devices POST to `/api/v1/sensor-readings/` with `"source": "iot"`
+- ESP32 publishes MQTT JSON with `"pond": 1` (Ao nuôi 1) to HiveMQ
+- Run `python manage.py mqtt_sensor_bridge` so Django saves `SensorReading` with `source="iot"`
 - React `SensorWidget` unchanged — still reads from API
 - Retire JSON mock once devices are live
 

@@ -1,0 +1,68 @@
+MinhDungFarm — How To Start
+============================
+
+Prerequisites: Python 3.12+, Node.js 20+
+SQLite is used by default (USE_SQLITE=True in .env).
+
+
+First time setup
+----------------
+
+Backend (terminal 1):
+
+  cd ShrimpFarm
+  python -m venv .venv
+  source .venv/bin/activate          # Windows: .venv\Scripts\activate
+  pip install -r requirements.txt
+  cp .env.example .env
+  python manage.py migrate
+  python manage.py createsuperuser
+  python manage.py seed_farm_data
+  python manage.py runserver 8000
+
+Frontend (terminal 2):
+
+  cd ShrimpFarm/frontend
+  npm install
+  cp .env.example .env
+  npm run dev
+
+
+Every time after setup
+----------------------
+
+Backend:
+
+  cd ShrimpFarm
+  source .venv/bin/activate
+  python manage.py runserver 8000
+  # MQTT subscriber starts with runserver when MQTT_* is set in .env
+
+Frontend:
+
+  cd ShrimpFarm/frontend
+  npm run dev
+
+IoT MQTT (optional extra terminal — also starts automatically with runserver):
+
+  cd ShrimpFarm
+  source .venv/bin/activate
+  python manage.py mqtt_sensor_bridge
+
+
+Open the app
+------------
+
+  http://localhost:5173       React UI (login with superuser)
+  http://localhost:8000/api/v1/   API
+  http://localhost:8000/admin/    Django admin
+
+
+Optional
+--------
+
+  # Reload mock sensor data only
+  python manage.py seed_farm_data --sensors-only
+
+  # Production frontend build
+  cd frontend && npm run build

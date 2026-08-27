@@ -20,8 +20,14 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      const path = window.location.pathname
+      const isPublicAuth =
+        path === '/login' ||
+        path === '/register' ||
+        path === '/forgot-password' ||
+        path.startsWith('/reset-password')
       clearToken()
-      if (window.location.pathname !== '/login') {
+      if (!isPublicAuth) {
         window.location.href = '/login'
       }
     }

@@ -14,13 +14,13 @@ export default function PondList() {
     endpoints.ponds().then(setPonds).finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <p className="text-gray-500">{t('common.loading')}</p>
+  if (loading) return <p className="text-ink-muted">{t('common.loading')}</p>
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">{t('ponds.title')}</h1>
-        <p className="text-gray-500">{t('ponds.subtitle')}</p>
+        <h1 className="text-2xl font-bold tracking-tight text-ink">{t('ponds.title')}</h1>
+        <p className="mt-1 text-ink-muted">{t('ponds.subtitle')}</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -28,22 +28,22 @@ export default function PondList() {
           <Link
             key={pond.id}
             to={`/ao/${pond.id}`}
-            className="rounded-xl bg-white p-4 shadow-sm transition hover:shadow-md"
+            className="rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)] transition hover:shadow-[var(--shadow-card-hover)]"
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">{pond.name}</h2>
-                <p className="text-sm text-gray-500">{pondTypeLabel(pond.pond_type)}</p>
+                <h2 className="text-lg font-semibold text-ink">{pond.name}</h2>
+                <p className="text-sm text-ink-muted">{pondTypeLabel(pond.pond_type)}</p>
               </div>
               <span
-                className={`rounded-full px-2 py-1 text-xs ${
-                  pond.active ? 'bg-teal-50 text-teal-700' : 'bg-gray-100 text-gray-500'
+                className={`rounded-full px-2.5 py-1 text-xs font-medium ${
+                  pond.active ? 'bg-aqua-soft text-aqua-dark' : 'bg-surface-muted text-ink-muted'
                 }`}
               >
                 {pond.active ? t('common.active') : t('common.inactive')}
               </span>
             </div>
-            <div className="mt-4 grid grid-cols-2 gap-2 text-sm text-gray-600">
+            <div className="mt-4 grid grid-cols-2 gap-2 text-sm text-ink-muted">
               <p>{t('ponds.areaLabel', { value: pond.area_m2 ?? '—' })}</p>
               <p>{t('ponds.depthLabel', { value: pond.depth_m ?? '—' })}</p>
               <p className="col-span-2">

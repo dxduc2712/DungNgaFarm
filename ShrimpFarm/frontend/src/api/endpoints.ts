@@ -5,6 +5,15 @@ export interface LoginResponse {
   refresh: string
 }
 
+export interface User {
+  id: number
+  username: string
+  email: string
+  first_name: string
+  last_name: string
+  is_staff: boolean
+}
+
 export interface DashboardData {
   total_ponds: number
   active_crops: number
@@ -138,9 +147,58 @@ export interface FeedingStats {
   recommended_kg: number | null
 }
 
+export interface RegisterPayload {
+  email: string
+  password: string
+  password_confirm: string
+  first_name?: string
+  last_name?: string
+  username?: string
+}
+
+export interface RegisterResponse extends LoginResponse {
+  user: User
+}
+
+export interface ProfileUpdatePayload {
+  first_name?: string
+  last_name?: string
+}
+
+export interface ChangePasswordPayload {
+  current_password: string
+  new_password: string
+  new_password_confirm: string
+}
+
 export const endpoints = {
   login: (username: string, password: string) =>
     api.post<LoginResponse>('/auth/login/', { username, password }),
+
+  register: (data: RegisterPayload) =>
+    api.post<RegisterResponse>('/auth/register/', data),
+
+  passwordReset: (email: string) =>
+    api.post<{ detail: string }>('/auth/password-reset/', { email }),
+
+  passwordResetConfirm: (data: {
+    uid: string
+    token: string
+    new_password: string
+    new_password_confirm: string
+  }) => api.post<{ detail: string }>('/auth/password-reset/confirm/', data),
+
+  changePassword: (data: ChangePasswordPayload) =>
+    api.post<{ detail: string }>('/auth/change-password/', data),
+
+  logout: () => api.post<{ ok: boolean }>('/auth/logout/', {}, { withCredentials: true }),
+
+  me: () => api.get<User>('/auth/me/'),
+
+  updateProfile: (data: ProfileUpdatePayload) => api.patch<User>('/auth/me/', data),
+
+  createDjangoSession: () =>
+    api.post<{ ok: boolean }>('/auth/django-session/', {}, { withCredentials: true }),
 
   dashboard: () => api.get<DashboardData>('/dashboard/'),
 

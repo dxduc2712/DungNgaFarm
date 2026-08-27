@@ -73,6 +73,17 @@ Key endpoints:
 
 The React app always reads sensor data from the API, never from the JSON file directly.
 
+## Live ESP32 sensor (pond 1)
+
+ESP32 publishes MQTT JSON with `"pond": 1` (Ao nuôi 1). Copy MQTT settings from `.env.example` into `.env`, then:
+
+```bash
+pip install -r requirements.txt
+python manage.py mqtt_sensor_bridge
+```
+
+Dashboard **Ao nuôi 1** then shows `source: iot` readings. Re-upload the Arduino sketch after changing `POND_ID`.
+
 ## Django admin
 
 http://localhost:8000/admin/ — full CRUD for all models.

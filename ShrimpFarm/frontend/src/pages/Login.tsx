@@ -1,14 +1,27 @@
 import { type FormEvent, useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import AuthLayout from '../components/AuthLayout'
+import {
+  formErrorClass,
+  formSuccessClass,
+  inputClass,
+  labelClass,
+  linkClass,
+  primaryButtonBlockClass,
+} from '../components/formStyles'
 import { useAuth } from '../hooks/useAuth'
 
 export default function Login() {
   const { t } = useTranslation()
   const { authenticated, login, loading, error } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const passwordUpdated = Boolean(
+    (location.state as { passwordUpdated?: boolean } | null)?.passwordUpdated,
+  )
 
   if (authenticated) {
     return <Navigate to="/" replace />
@@ -21,43 +34,59 @@ export default function Login() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-sm">
-        <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold text-teal-700">{t('common.appName')}</h1>
-          <p className="mt-1 text-gray-500">{t('login.subtitle')}</p>
-        </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <label className="block text-sm">
-            <span className="text-gray-600">{t('login.username')}</span>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-3 text-base"
-              required
-            />
-          </label>
-          <label className="block text-sm">
-            <span className="text-gray-600">{t('login.password')}</span>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-3 text-base"
-              required
-            />
-          </label>
-          {error && <p className="text-sm text-red-600">{error}</p>}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-lg bg-teal-600 px-4 py-3 text-base font-medium text-white hover:bg-teal-700 disabled:opacity-60"
-          >
-            {loading ? t('login.submitting') : t('login.submit')}
-          </button>
-        </form>
-      </div>
-    </div>
+    <AuthLayout
+      subtitle={t('login.subtitle')}
+      footer={
+        <p>
+          {t('login.noAccount')}{' '}
+          <Link to="/register" className={linkClass}>
+            {t('login.createAccount')}
+          </Link>
+        </p>
+      }
+    >
+      {passwordUpdated && (
+        <p role="status" className={`mb-5 ${formSuccessClass}`}>
+          {t('login.passwordUpdated')}
+        </p>
+      )}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <label className={labelClass}>
+          {t('login.usernameOrEmail')}
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            autoComplete="username"
+            className={inputClass}
+            required
+          />
+        </label>
+        <label className={labelClass}>
+          <span className="flex items-center justify-between gap-3">
+            <span>{t('login.password')}</span>
+            <Link to="/forgot-password" className={`text-xs font-medium ${linkClass}`}>
+              {t('login.forgotPassword')}
+            </Link>
+          </span>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+            className={inputClass}
+            required
+          />
+        </label>
+        {error && (
+          <p role="alert" className={formErrorClass}>
+            {error}
+          </p>
+        )}
+        <button type="submit" disabled={loading} className={primaryButtonBlockClass}>
+          {loading ? t('login.submitting') : t('login.submit')}
+        </button>
+      </form>
+    </AuthLayout>
   )
 }

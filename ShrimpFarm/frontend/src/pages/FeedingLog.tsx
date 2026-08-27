@@ -112,12 +112,12 @@ export default function FeedingLog() {
     await loadData()
   }
 
-  if (loading) return <p className="text-gray-500">{t('common.loading')}</p>
+  if (loading) return <p className="text-ink-muted">{t('common.loading')}</p>
   if (!pond || !crop) {
     return (
       <div className="space-y-3">
-        <p className="text-gray-500">{t('feedingLog.noActiveCrop')}</p>
-        <Link to={`/ao/${pondId}`} className="text-teal-700">
+        <p className="text-ink-muted">{t('feedingLog.noActiveCrop')}</p>
+        <Link to={`/ao/${pondId}`} className="text-aqua-dark">
           {t('common.backToPondDetail')}
         </Link>
       </div>
@@ -127,28 +127,28 @@ export default function FeedingLog() {
   return (
     <div className="space-y-6">
       <div>
-        <Link to={`/ao/${pondId}`} className="text-sm text-teal-700">
+        <Link to={`/ao/${pondId}`} className="text-sm text-aqua-dark">
           ← {t('common.backTo', { name: pond.name })}
         </Link>
-        <h1 className="mt-2 text-2xl font-bold text-gray-900">
+        <h1 className="mt-2 text-2xl font-bold text-ink">
           {t('feedingLog.title', { name: pond.name })}
         </h1>
-        <p className="text-gray-500">{t('feedingLog.cropLabel', { code: crop.code })}</p>
+        <p className="text-ink-muted">{t('feedingLog.cropLabel', { code: crop.code })}</p>
       </div>
 
       {message && (
-        <div className="rounded-lg bg-teal-50 px-4 py-3 text-sm text-teal-800">{message}</div>
+        <div className="rounded-xl border border-aqua/20 bg-aqua-soft px-4 py-3 text-sm text-forest">{message}</div>
       )}
 
-      <section className="rounded-xl bg-white p-4 shadow-sm">
-        <h2 className="font-semibold text-gray-900">{t('feedingLog.feedingSection')}</h2>
+      <section className="rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]">
+        <h2 className="font-semibold text-ink">{t('feedingLog.feedingSection')}</h2>
         <form onSubmit={submitFeeding} className="mt-4 grid gap-3 md:grid-cols-2">
           <label className="block text-sm">
-            <span className="text-gray-600">{t('common.feed')}</span>
+            <span className="text-ink-muted">{t('common.feed')}</span>
             <select
               value={feedingForm.feed}
               onChange={(e) => setFeedingForm({ ...feedingForm, feed: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-base"
+              className="mt-1 w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
               required
             >
               <option value="">{t('common.selectFeed')}</option>
@@ -160,127 +160,127 @@ export default function FeedingLog() {
             </select>
           </label>
           <label className="block text-sm">
-            <span className="text-gray-600">{t('common.quantityKg')}</span>
+            <span className="text-ink-muted">{t('common.quantityKg')}</span>
             <input
               type="number"
               step="0.1"
               value={feedingForm.quantity_kg}
               onChange={(e) => setFeedingForm({ ...feedingForm, quantity_kg: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-base"
+              className="mt-1 w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
               required
             />
           </label>
           <label className="block text-sm">
-            <span className="text-gray-600">{t('common.time')}</span>
+            <span className="text-ink-muted">{t('common.time')}</span>
             <input
               type="datetime-local"
               value={feedingForm.feeding_time}
               onChange={(e) => setFeedingForm({ ...feedingForm, feeding_time: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-base"
+              className="mt-1 w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
               required
             />
           </label>
           <label className="block text-sm md:col-span-2">
-            <span className="text-gray-600">{t('common.note')}</span>
+            <span className="text-ink-muted">{t('common.note')}</span>
             <input
               value={feedingForm.note}
               onChange={(e) => setFeedingForm({ ...feedingForm, note: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-base"
+              className="mt-1 w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
             />
           </label>
           <button
             type="submit"
-            className="rounded-lg bg-teal-600 px-4 py-3 text-base font-medium text-white hover:bg-teal-700 md:col-span-2 md:max-w-xs"
+            className="rounded-xl bg-forest px-4 py-3 text-base font-semibold text-white transition hover:bg-forest-deep md:col-span-2 md:max-w-xs"
           >
             {t('feedingLog.saveFeeding')}
           </button>
         </form>
       </section>
 
-      <section className="rounded-xl bg-white p-4 shadow-sm">
-        <h2 className="font-semibold text-gray-900">{t('feedingLog.waterTreatmentSection')}</h2>
+      <section className="rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]">
+        <h2 className="font-semibold text-ink">{t('feedingLog.waterTreatmentSection')}</h2>
         <form onSubmit={submitTreatment} className="mt-4 grid gap-3 md:grid-cols-2">
           <label className="block text-sm">
-            <span className="text-gray-600">{t('common.product')}</span>
+            <span className="text-ink-muted">{t('common.product')}</span>
             <input
               value={treatmentForm.product_name}
               onChange={(e) =>
                 setTreatmentForm({ ...treatmentForm, product_name: e.target.value })
               }
-              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-base"
+              className="mt-1 w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
               required
             />
           </label>
           <label className="block text-sm">
-            <span className="text-gray-600">{t('common.dosage')}</span>
+            <span className="text-ink-muted">{t('common.dosage')}</span>
             <input
               value={treatmentForm.quantity}
               onChange={(e) => setTreatmentForm({ ...treatmentForm, quantity: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-base"
+              className="mt-1 w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
               required
             />
           </label>
           <label className="block text-sm md:col-span-2">
-            <span className="text-gray-600">{t('common.time')}</span>
+            <span className="text-ink-muted">{t('common.time')}</span>
             <input
               type="datetime-local"
               value={treatmentForm.treatment_time}
               onChange={(e) =>
                 setTreatmentForm({ ...treatmentForm, treatment_time: e.target.value })
               }
-              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-base"
+              className="mt-1 w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
               required
             />
           </label>
           <button
             type="submit"
-            className="rounded-lg bg-teal-600 px-4 py-3 text-base font-medium text-white hover:bg-teal-700 md:max-w-xs"
+            className="rounded-xl bg-forest px-4 py-3 text-base font-semibold text-white transition hover:bg-forest-deep md:max-w-xs"
           >
             {t('feedingLog.saveTreatment')}
           </button>
         </form>
       </section>
 
-      <section className="rounded-xl bg-white p-4 shadow-sm">
-        <h2 className="font-semibold text-gray-900">{t('feedingLog.waterExchangeSection')}</h2>
+      <section className="rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]">
+        <h2 className="font-semibold text-ink">{t('feedingLog.waterExchangeSection')}</h2>
         <form onSubmit={submitExchange} className="mt-4 grid gap-3 md:grid-cols-2">
           <label className="block text-sm">
-            <span className="text-gray-600">{t('common.action')}</span>
+            <span className="text-ink-muted">{t('common.action')}</span>
             <select
               value={exchangeForm.action}
               onChange={(e) => setExchangeForm({ ...exchangeForm, action: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-base"
+              className="mt-1 w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
             >
               <option value="PUMP_IN">{t('feedingLog.pumpIn')}</option>
               <option value="SIPHON">{t('feedingLog.siphon')}</option>
             </select>
           </label>
           <label className="block text-sm">
-            <span className="text-gray-600">{t('common.percentage')}</span>
+            <span className="text-ink-muted">{t('common.percentage')}</span>
             <input
               type="number"
               step="0.1"
               value={exchangeForm.percentage}
               onChange={(e) => setExchangeForm({ ...exchangeForm, percentage: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-base"
+              className="mt-1 w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
               required
             />
           </label>
           <button
             type="submit"
-            className="rounded-lg bg-teal-600 px-4 py-3 text-base font-medium text-white hover:bg-teal-700 md:max-w-xs"
+            className="rounded-xl bg-forest px-4 py-3 text-base font-semibold text-white transition hover:bg-forest-deep md:max-w-xs"
           >
             {t('feedingLog.saveExchange')}
           </button>
         </form>
       </section>
 
-      <section className="rounded-xl bg-white p-4 shadow-sm">
-        <h2 className="font-semibold text-gray-900">{t('feedingLog.recentHistory')}</h2>
+      <section className="rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]">
+        <h2 className="font-semibold text-ink">{t('feedingLog.recentHistory')}</h2>
         <div className="mt-4 space-y-4 text-sm">
           <div>
-            <h3 className="font-medium text-gray-800">{t('feedingLog.feedingHistory')}</h3>
-            <ul className="mt-2 space-y-1 text-gray-600">
+            <h3 className="font-medium text-ink">{t('feedingLog.feedingHistory')}</h3>
+            <ul className="mt-2 space-y-1 text-ink-muted">
               {feedingRecords.slice(0, 8).map((record) => (
                 <li key={record.id}>
                   {formatDateTime(record.feeding_time)} — {record.feed_name}: {record.quantity_kg} kg
@@ -289,8 +289,8 @@ export default function FeedingLog() {
             </ul>
           </div>
           <div>
-            <h3 className="font-medium text-gray-800">{t('feedingLog.treatmentHistory')}</h3>
-            <ul className="mt-2 space-y-1 text-gray-600">
+            <h3 className="font-medium text-ink">{t('feedingLog.treatmentHistory')}</h3>
+            <ul className="mt-2 space-y-1 text-ink-muted">
               {treatments.slice(0, 5).map((item) => (
                 <li key={item.id}>
                   {formatDateTime(item.treatment_time)} — {item.product_name}
@@ -299,8 +299,8 @@ export default function FeedingLog() {
             </ul>
           </div>
           <div>
-            <h3 className="font-medium text-gray-800">{t('feedingLog.exchangeHistory')}</h3>
-            <ul className="mt-2 space-y-1 text-gray-600">
+            <h3 className="font-medium text-ink">{t('feedingLog.exchangeHistory')}</h3>
+            <ul className="mt-2 space-y-1 text-ink-muted">
               {exchanges.slice(0, 5).map((item) => (
                 <li key={item.id}>
                   {formatDateTime(item.exchange_time)} — {item.percentage}%

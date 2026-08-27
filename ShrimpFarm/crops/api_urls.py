@@ -1,7 +1,16 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import TokenObtainPairView
 
+from .views.auth_view import (
+    ChangePasswordView,
+    CurrentUserView,
+    DjangoSessionView,
+    EmailOrUsernameTokenObtainPairView,
+    LogoutView,
+    PasswordResetConfirmView,
+    PasswordResetRequestView,
+    RegisterView,
+)
 from .views.dashboard_view import DashboardView
 from .views.viewsets import (
     CropViewSet,
@@ -39,5 +48,28 @@ router.register(r"sensor-alerts", SensorAlertViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path("dashboard/", DashboardView.as_view(), name="dashboard"),
-    path("auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path(
+        "auth/login/",
+        EmailOrUsernameTokenObtainPairView.as_view(),
+        name="token_obtain_pair",
+    ),
+    path("auth/register/", RegisterView.as_view(), name="auth_register"),
+    path(
+        "auth/password-reset/",
+        PasswordResetRequestView.as_view(),
+        name="auth_password_reset",
+    ),
+    path(
+        "auth/password-reset/confirm/",
+        PasswordResetConfirmView.as_view(),
+        name="auth_password_reset_confirm",
+    ),
+    path(
+        "auth/change-password/",
+        ChangePasswordView.as_view(),
+        name="auth_change_password",
+    ),
+    path("auth/logout/", LogoutView.as_view(), name="auth_logout"),
+    path("auth/me/", CurrentUserView.as_view(), name="current_user"),
+    path("auth/django-session/", DjangoSessionView.as_view(), name="django_session"),
 ]

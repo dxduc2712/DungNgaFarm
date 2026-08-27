@@ -1,0 +1,64 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{# Full header override: drop Welcome / View site / password / logout (React sidebar owns account UX) #}
+{% block header %}
+<header id="header">
+  <div id="branding">
+    <div id="site-name">
+      <a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a>
+    </div>
+  </div>
+</header>
+{% endblock %}
+
+{% block usertools %}{% endblock %}
+{% block nav-global %}{% endblock %}
+{% block nav-sidebar %}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  #header { padding: 12px 20px; }
+  #user-tools, #toggle-nav-sidebar, #nav-sidebar { display: none !important; }
+  .main, #main { margin-left: 0 !important; }
+</style>
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script>
+  (function () {
+    function isSpaPath(pathname) {
+      return (
+        pathname === "/" ||
+        pathname === "/admin" ||
+        pathname.indexOf("/ao") === 0 ||
+        pathname.indexOf("/settings") === 0 ||
+        pathname.indexOf("/canh-bao") === 0 ||
+        pathname.indexOf("/kho-thuc-an") === 0 ||
+        pathname.indexOf("/login") === 0
+      );
+    }
+    document.addEventListener(
+      "click",
+      function (event) {
+        if (window.top === window.self) return;
+        var target = event.target;
+        while (target && target.tagName !== "A") target = target.parentElement;
+        if (!target || !target.href) return;
+        try {
+          var url = new URL(target.href, window.location.origin);
+          if (url.origin !== window.location.origin) return;
+          if (url.pathname.indexOf("/django-admin") === 0) return;
+          if (!isSpaPath(url.pathname)) return;
+          event.preventDefault();
+          window.top.location.href = url.pathname + url.search + url.hash;
+        } catch (e) {}
+      },
+      true
+    );
+  })();
+</script>
+{% endblock %}

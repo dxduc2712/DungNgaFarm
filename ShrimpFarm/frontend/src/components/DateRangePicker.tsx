@@ -46,7 +46,7 @@ export default function DateRangePicker({ value, onChange }: DateRangePickerProp
             key={preset.label}
             type="button"
             onClick={() => onChange({ ...value, from: preset.from, to: preset.to })}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 hover:border-teal-300"
+            className="rounded-lg border border-border-soft bg-white px-3 py-2 text-sm text-ink hover:border-aqua"
           >
             {preset.label}
           </button>
@@ -55,21 +55,21 @@ export default function DateRangePicker({ value, onChange }: DateRangePickerProp
 
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="block text-sm">
-          <span className="text-gray-600">{t('dateRange.fromDate')}</span>
+          <span className="text-ink-muted">{t('dateRange.fromDate')}</span>
           <input
             type="date"
             value={value.from}
             onChange={(e) => onChange({ ...value, from: e.target.value })}
-            className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-base"
+            className="mt-1 w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
           />
         </label>
         <label className="block text-sm">
-          <span className="text-gray-600">{t('dateRange.toDate')}</span>
+          <span className="text-ink-muted">{t('dateRange.toDate')}</span>
           <input
             type="date"
             value={value.to}
             onChange={(e) => onChange({ ...value, to: e.target.value })}
-            className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-base"
+            className="mt-1 w-full rounded-xl border border-border-soft bg-white px-3 py-2 text-base text-ink"
           />
         </label>
       </div>
@@ -82,8 +82,8 @@ export default function DateRangePicker({ value, onChange }: DateRangePickerProp
             onClick={() => onChange({ ...value, groupBy: key })}
             className={`rounded-lg px-3 py-2 text-sm ${
               value.groupBy === key
-                ? 'bg-teal-600 text-white'
-                : 'border border-gray-200 bg-white text-gray-700'
+                ? 'bg-forest text-white'
+                : 'border border-border-soft bg-white text-ink'
             }`}
           >
             {label}

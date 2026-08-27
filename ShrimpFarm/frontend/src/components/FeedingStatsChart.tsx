@@ -64,16 +64,16 @@ export default function FeedingStatsChart({ pondId, cropId }: FeedingStatsChartP
     stats && stats.series.length > 0 ? stats.total_kg / stats.series.length : 0
 
   return (
-    <div className="rounded-xl bg-white p-4 shadow-sm">
-      <h2 className="text-lg font-semibold text-gray-900">{t('chart.feedingStatsTitle')}</h2>
+    <div className="rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]">
+      <h2 className="text-lg font-semibold text-ink">{t('chart.feedingStatsTitle')}</h2>
       <div className="mt-4">
         <DateRangePicker value={range} onChange={setRange} />
       </div>
 
       {loading ? (
-        <p className="mt-6 text-sm text-gray-500">{t('common.loading')}</p>
+        <p className="mt-6 text-sm text-ink-muted">{t('common.loading')}</p>
       ) : !stats || stats.series.length === 0 ? (
-        <p className="mt-6 text-sm text-gray-500">{t('chart.noDataInRange')}</p>
+        <p className="mt-6 text-sm text-ink-muted">{t('chart.noDataInRange')}</p>
       ) : (
         <>
           <div className="mt-4 overflow-x-auto">
@@ -84,7 +84,7 @@ export default function FeedingStatsChart({ pondId, cropId }: FeedingStatsChartP
                   <XAxis dataKey="period_label" />
                   <YAxis unit=" kg" />
                   <Tooltip formatter={(value) => [`${value} kg`, t('chart.feedAmount')]} />
-                  <Bar dataKey="quantity_kg" fill="#0d9488" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="quantity_kg" fill="#0f3d2e" radius={[6, 6, 0, 0]} />
                   {stats.recommended_kg != null && (
                     <ReferenceLine
                       y={stats.recommended_kg}
@@ -97,7 +97,7 @@ export default function FeedingStatsChart({ pondId, cropId }: FeedingStatsChartP
               </ResponsiveContainer>
             </div>
           </div>
-          <div className="mt-4 flex flex-wrap gap-4 text-sm text-gray-700">
+          <div className="mt-4 flex flex-wrap gap-4 text-sm text-ink">
             <span>
               <strong>{t('chart.total')}:</strong> {stats.total_kg.toFixed(1)} kg
             </span>

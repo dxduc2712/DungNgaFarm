@@ -8,13 +8,17 @@ interface StatCardProps {
 
 export default function StatCard({ title, value, icon }: StatCardProps) {
   return (
-    <div className="rounded-xl bg-white p-4 shadow-sm">
+    <div className="rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm text-gray-500">{title}</p>
-          <p className="mt-1 text-2xl font-semibold text-gray-900">{value}</p>
+          <p className="text-sm font-medium text-ink-muted">{title}</p>
+          <p className="mt-2 text-3xl font-bold tracking-tight text-forest">{value}</p>
         </div>
-        {icon && <div className="text-teal-600">{icon}</div>}
+        {icon && (
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-aqua-soft text-aqua-dark [&_svg]:h-5 [&_svg]:w-5">
+            {icon}
+          </div>
+        )}
       </div>
     </div>
   )
