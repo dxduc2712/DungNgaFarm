@@ -81,6 +81,7 @@ export default function Dashboard() {
           {data.ponds.map((pond) => (
             <SensorWidget
               key={pond.id}
+              pondId={pond.id}
               pondName={pond.name}
               reading={pond.latest_reading}
             />

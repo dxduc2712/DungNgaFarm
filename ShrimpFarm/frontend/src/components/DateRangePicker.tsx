@@ -13,23 +13,34 @@ interface DateRangePickerProps {
   onChange: (value: DateRangeValue) => void
 }
 
-function todayIso() {
-  return new Date().toISOString().slice(0, 10)
+function toLocalIso(date: Date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
-function daysAgoIso(days: number) {
+export function todayIso() {
+  return toLocalIso(new Date())
+}
+
+export function daysAgoIso(days: number) {
   const date = new Date()
   date.setDate(date.getDate() - days)
-  return date.toISOString().slice(0, 10)
+  return toLocalIso(date)
 }
+
+const activeBtn = 'rounded-lg bg-forest px-3 py-2 text-sm font-semibold text-white'
+const idleBtn =
+  'rounded-lg border border-border-soft bg-white px-3 py-2 text-sm text-ink hover:border-aqua'
 
 export default function DateRangePicker({ value, onChange }: DateRangePickerProps) {
   const { t } = useTranslation()
 
-  const presets = [
-    { label: t('dateRange.days7'), from: daysAgoIso(7), to: todayIso() },
-    { label: t('dateRange.weeks4'), from: daysAgoIso(28), to: todayIso() },
-    { label: t('dateRange.months3'), from: daysAgoIso(90), to: todayIso() },
+  const presets: { label: string; from: string; to: string; groupBy: GroupBy }[] = [
+    { label: t('dateRange.days7'), from: daysAgoIso(7), to: todayIso(), groupBy: 'day' },
+    { label: t('dateRange.weeks4'), from: daysAgoIso(28), to: todayIso(), groupBy: 'week' },
+    { label: t('dateRange.months3'), from: daysAgoIso(90), to: todayIso(), groupBy: 'month' },
   ]
 
   const groupByOptions: { key: GroupBy; label: string }[] = [
@@ -41,16 +52,25 @@ export default function DateRangePicker({ value, onChange }: DateRangePickerProp
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap gap-2">
-        {presets.map((preset) => (
-          <button
-            key={preset.label}
-            type="button"
-            onClick={() => onChange({ ...value, from: preset.from, to: preset.to })}
-            className="rounded-lg border border-border-soft bg-white px-3 py-2 text-sm text-ink hover:border-aqua"
-          >
-            {preset.label}
-          </button>
-        ))}
+        {presets.map((preset) => {
+          const selected = value.from === preset.from && value.to === preset.to
+          return (
+            <button
+              key={preset.label}
+              type="button"
+              onClick={() =>
+                onChange({
+                  from: preset.from,
+                  to: preset.to,
+                  groupBy: preset.groupBy,
+                })
+              }
+              className={selected ? activeBtn : idleBtn}
+            >
+              {preset.label}
+            </button>
+          )
+        })}
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
@@ -80,11 +100,7 @@ export default function DateRangePicker({ value, onChange }: DateRangePickerProp
             key={key}
             type="button"
             onClick={() => onChange({ ...value, groupBy: key })}
-            className={`rounded-lg px-3 py-2 text-sm ${
-              value.groupBy === key
-                ? 'bg-forest text-white'
-                : 'border border-border-soft bg-white text-ink'
-            }`}
+            className={value.groupBy === key ? activeBtn : idleBtn}
           >
             {label}
           </button>

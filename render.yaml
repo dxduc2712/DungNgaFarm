@@ -1,0 +1,39 @@
+databases:
+  - name: minhdungfarm-db
+    plan: free
+
+services:
+  - type: web
+    name: minhdungfarm
+    runtime: docker
+    dockerfilePath: ShrimpFarm/Dockerfile
+    dockerContext: ShrimpFarm
+    plan: free
+    healthCheckPath: /django-admin/login/
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: USE_SQLITE
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: minhdungfarm-db
+          property: connectionString
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: MQTT_HOST
+        sync: false
+      - key: MQTT_PORT
+        value: "8883"
+      - key: MQTT_USER
+        sync: false
+      - key: MQTT_PASSWORD
+        sync: false
+      - key: MQTT_TOPIC
+        value: shrimpfarm/sensor/temperature
+      - key: MQTT_CLIENT_ID
+        value: django-shrimp-bridge
+      - key: MQTT_DEFAULT_POND_ID
+        value: "1"

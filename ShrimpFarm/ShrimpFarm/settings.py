@@ -6,6 +6,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+import dj_database_url
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -22,6 +23,9 @@ ALLOWED_HOSTS = [
     for h in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
     if h.strip()
 ]
+render_hostname = os.getenv("RENDER_EXTERNAL_HOSTNAME", "").strip()
+if render_hostname and render_hostname not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(render_hostname)
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -39,6 +43,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -67,9 +72,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "ShrimpFarm.wsgi.application"
 
+DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 USE_SQLITE = os.getenv("USE_SQLITE", "True").lower() in ("true", "1", "yes")
 
-if USE_SQLITE:
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600),
+    }
+elif USE_SQLITE:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -101,6 +111,20 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+FRONTEND_DIST = BASE_DIR / "frontend" / "dist"
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
+if FRONTEND_DIST.is_dir():
+    WHITENOISE_ROOT = FRONTEND_DIST
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -113,6 +137,10 @@ CORS_ALLOWED_ORIGINS = [
     if origin.strip()
 ]
 CORS_ALLOW_CREDENTIALS = True
+if render_hostname:
+    https_origin = f"https://{render_hostname}"
+    if https_origin not in CORS_ALLOWED_ORIGINS:
+        CORS_ALLOWED_ORIGINS.append(https_origin)
 
 # Trust the same origins used for CORS (needed for credentialed cross-origin POSTs).
 CSRF_TRUSTED_ORIGINS = [
@@ -123,6 +151,9 @@ CSRF_TRUSTED_ORIGINS = [
     ).split(",")
     if origin.strip()
 ]
+render_url = os.getenv("RENDER_EXTERNAL_URL", "").strip().rstrip("/")
+if render_url and render_url not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append(render_url)
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
 
@@ -153,7 +184,9 @@ SIMPLE_JWT = {
 }
 
 # Frontend URL used in password-reset emails
-FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+FRONTEND_URL = os.getenv("FRONTEND_URL") or os.getenv(
+    "RENDER_EXTERNAL_URL", "http://localhost:5173"
+)
 
 # Email — console backend for local/dev when SMTP is not configured
 EMAIL_HOST = os.getenv("EMAIL_HOST", "").strip()

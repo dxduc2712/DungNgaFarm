@@ -94,15 +94,50 @@ http://localhost:8000/admin/ — full CRUD for all models.
 ShrimpFarm/
 ├── crops/                 # Django app (models, API, seed command)
 ├── frontend/              # React + Vite + Tailwind UI
+├── Dockerfile             # Production image (Node build + Gunicorn)
+├── Procfile
 ├── requirements.txt
 ├── .env.example
 ├── README.md
 └── NOTES.md
 ```
 
+Repo root also has `render.yaml` for Render Blueprint.
+
 ## Production notes
 
 - Set `DEBUG=False` and a strong `SECRET_KEY`
-- Use PostgreSQL in production
-- Serve frontend build (`npm run build`) via nginx or similar
-- Configure `CORS_ALLOWED_ORIGINS` for your domain
+- Use PostgreSQL in production (`DATABASE_URL`)
+- Serve frontend build from Django (WhiteNoise); one Gunicorn worker so MQTT stays unique
+- Configure `CORS_ALLOWED_ORIGINS` / `FRONTEND_URL` for your domain
+
+## Deploy (GitHub + Render)
+
+GitHub only stores the repo. Render (or Railway) runs it and gives a public HTTPS URL.
+
+1. Push this repo to GitHub (`main`).
+2. On [Render](https://render.com): **New → Blueprint** and select `dxduc2712/DungNgaFarm`, or create a **Web Service** with:
+   - Runtime: **Docker**
+   - Dockerfile path: `ShrimpFarm/Dockerfile`
+   - Context: `ShrimpFarm`
+3. Add a **PostgreSQL** database and set `DATABASE_URL` (Blueprint `render.yaml` does this).
+4. Set env vars (do not commit secrets): `SECRET_KEY`, `DEBUG=False`, `MQTT_USER`, `MQTT_PASSWORD`, `MQTT_HOST`. `RENDER_EXTERNAL_HOSTNAME` is set automatically.
+5. After the first deploy, open the Render **Shell** and run:
+
+```bash
+python manage.py createsuperuser
+python manage.py seed_farm_data
+```
+
+6. Later deploys: `git push origin main`.
+
+Local production-like check:
+
+```bash
+cd ShrimpFarm/frontend && VITE_API_BASE_URL= npm run build && cd ..
+gunicorn ShrimpFarm.wsgi:application --bind 0.0.0.0:8000 --workers 1
+```
+
+Open http://localhost:8000 (not :5173). Keep `--workers 1` so only one MQTT client id connects to HiveMQ.
+
+ESP32 stays on HiveMQ Cloud; the server subscribes using `MQTT_*`.

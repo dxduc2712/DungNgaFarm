@@ -191,6 +191,7 @@
     "noDataInRange": "Chưa có dữ liệu cho ăn trong khoảng thời gian này",
     "feedAmount": "Lượng ăn",
     "planned": "Kế hoạch",
+    "average": "Trung bình",
     "total": "Tổng",
     "averagePerWeek": "Trung bình/tuần"
   },

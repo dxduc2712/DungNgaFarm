@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import ssl
+import sys
 import threading
 
 from django.conf import settings
@@ -126,15 +127,37 @@ def start_mqtt_subscriber(blocking=False, stdout=None):
     return client
 
 
+_SKIP_MQTT_COMMANDS = {
+    "migrate",
+    "makemigrations",
+    "collectstatic",
+    "createsuperuser",
+    "shell",
+    "test",
+    "mqtt_sensor_bridge",
+    "seed_farm_data",
+}
+
+
+def _should_start_mqtt_in_process():
+    argv = sys.argv
+    if any(command in argv for command in _SKIP_MQTT_COMMANDS):
+        return False
+    # Django runserver parent process (reloader) must not open a second MQTT client.
+    if "runserver" in argv and os.environ.get("RUN_MAIN") != "true":
+        return False
+    return True
+
+
 def start_mqtt_subscriber_in_process():
-    """Start once from AppConfig.ready() when runserver is the child process."""
+    """Start once from AppConfig.ready() (runserver child or gunicorn)."""
     global _started
     if _started:
         return
-    if os.environ.get("RUN_MAIN") != "true":
-        return
     if not mqtt_configured():
         logger.warning("MQTT not configured; pond IoT readings will not be saved")
+        return
+    if not _should_start_mqtt_in_process():
         return
 
     _started = True

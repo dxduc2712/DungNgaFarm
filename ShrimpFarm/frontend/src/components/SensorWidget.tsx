@@ -1,11 +1,31 @@
+import type { ReactNode } from 'react'
 import { Droplets } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { SensorReading } from '../api/endpoints'
 import { isOutOfRange } from '../utils/sensors'
 
 interface SensorWidgetProps {
+  pondId?: number
   pondName: string
   reading: SensorReading | null
+}
+
+const cardClass =
+  'rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]'
+
+function CardShell({ pondId, children }: { pondId?: number; children: ReactNode }) {
+  if (pondId) {
+    return (
+      <Link
+        to={`/ao/${pondId}`}
+        className={`${cardClass} block transition hover:shadow-[var(--shadow-card-hover)]`}
+      >
+        {children}
+      </Link>
+    )
+  }
+  return <div className={cardClass}>{children}</div>
 }
 
 function valueClass(type: 'ph' | 'salinity' | 'temperature', value: number) {
@@ -14,12 +34,12 @@ function valueClass(type: 'ph' | 'salinity' | 'temperature', value: number) {
     : 'font-semibold text-ink'
 }
 
-export default function SensorWidget({ pondName, reading }: SensorWidgetProps) {
+export default function SensorWidget({ pondId, pondName, reading }: SensorWidgetProps) {
   const { t } = useTranslation()
 
   if (!reading) {
     return (
-      <div className="rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]">
+      <CardShell pondId={pondId}>
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-forest-soft text-forest">
             <Droplets className="h-4 w-4" aria-hidden />
@@ -27,7 +47,7 @@ export default function SensorWidget({ pondName, reading }: SensorWidgetProps) {
           <h3 className="font-semibold text-ink">{pondName}</h3>
         </div>
         <p className="mt-4 text-sm text-ink-muted">{t('sensor.noData')}</p>
-      </div>
+      </CardShell>
     )
   }
 
@@ -38,7 +58,7 @@ export default function SensorWidget({ pondName, reading }: SensorWidgetProps) {
     reading.source === 'iot' ? t('sensor.sourceIot') : t('sensor.sourceManual')
 
   return (
-    <div className="rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]">
+    <CardShell pondId={pondId}>
       <div className="flex items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-forest-soft text-forest">
@@ -66,6 +86,6 @@ export default function SensorWidget({ pondName, reading }: SensorWidgetProps) {
           </p>
         </div>
       </div>
-    </div>
+    </CardShell>
   )
 }

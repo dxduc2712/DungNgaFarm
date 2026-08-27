@@ -191,6 +191,7 @@
     "noDataInRange": "No feeding data in this date range",
     "feedAmount": "Feed amount",
     "planned": "Planned",
+    "average": "Average",
     "total": "Total",
     "averagePerWeek": "Average/week"
   },

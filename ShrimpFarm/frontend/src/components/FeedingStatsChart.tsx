@@ -12,7 +12,7 @@ import {
 } from 'recharts'
 import type { FeedingStats } from '../api/endpoints'
 import { endpoints } from '../api/endpoints'
-import DateRangePicker, { type DateRangeValue } from './DateRangePicker'
+import DateRangePicker, { daysAgoIso, todayIso, type DateRangeValue } from './DateRangePicker'
 
 interface FeedingStatsChartProps {
   pondId: number
@@ -20,12 +20,9 @@ interface FeedingStatsChartProps {
 }
 
 function defaultRange(): DateRangeValue {
-  const to = new Date()
-  const from = new Date()
-  from.setDate(from.getDate() - 28)
   return {
-    from: from.toISOString().slice(0, 10),
-    to: to.toISOString().slice(0, 10),
+    from: daysAgoIso(28),
+    to: todayIso(),
     groupBy: 'week',
   }
 }
@@ -63,6 +60,9 @@ export default function FeedingStatsChart({ pondId, cropId }: FeedingStatsChartP
   const average =
     stats && stats.series.length > 0 ? stats.total_kg / stats.series.length : 0
 
+  const barSize = range.groupBy === 'day' ? 18 : 28
+  const barCategoryGap = range.groupBy === 'day' ? '18%' : '55%'
+
   return (
     <div className="rounded-2xl border border-border-soft bg-card p-5 shadow-[var(--shadow-card)]">
       <h2 className="text-lg font-semibold text-ink">{t('chart.feedingStatsTitle')}</h2>
@@ -79,12 +79,29 @@ export default function FeedingStatsChart({ pondId, cropId }: FeedingStatsChartP
           <div className="mt-4 overflow-x-auto">
             <div className="min-w-[320px] h-72">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={stats.series}>
+                <BarChart data={stats.series} barCategoryGap={barCategoryGap}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="period_label" />
                   <YAxis unit=" kg" />
                   <Tooltip formatter={(value) => [`${value} kg`, t('chart.feedAmount')]} />
-                  <Bar dataKey="quantity_kg" fill="#0f3d2e" radius={[6, 6, 0, 0]} />
+                  <Bar
+                    dataKey="quantity_kg"
+                    fill="#0f3d2e"
+                    radius={[6, 6, 0, 0]}
+                    maxBarSize={barSize}
+                  />
+                  <ReferenceLine
+                    y={Number(average.toFixed(1))}
+                    stroke="#0284c7"
+                    strokeWidth={2}
+                    strokeDasharray="6 4"
+                    label={{
+                      value: `${t('chart.average')} ${average.toFixed(1)} kg`,
+                      position: 'insideTopLeft',
+                      fill: '#0284c7',
+                      fontSize: 12,
+                    }}
+                  />
                   {stats.recommended_kg != null && (
                     <ReferenceLine
                       y={stats.recommended_kg}
