@@ -133,6 +133,7 @@
   "ponds": {
     "title": "Pond list",
     "subtitle": "Manage grow-out and reserve ponds",
+    "firmwareId": "Firmware ID: {{id}}",
     "areaLabel": "Area: {{value}} m²",
     "depthLabel": "Depth: {{value}} m",
     "cropLabel": "Crop cycle: {{value}}",

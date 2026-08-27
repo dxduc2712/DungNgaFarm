@@ -133,6 +133,7 @@
   "ponds": {
     "title": "Danh sách ao",
     "subtitle": "Quản lý ao nuôi và ao dự trữ",
+    "firmwareId": "ID firmware: {{id}}",
     "areaLabel": "Diện tích: {{value}} m²",
     "depthLabel": "Độ sâu: {{value}} m",
     "cropLabel": "Vụ nuôi: {{value}}",

@@ -26,9 +26,12 @@ class FarmAdmin(admin.ModelAdmin):
 
 @admin.register(Pond)
 class PondAdmin(admin.ModelAdmin):
-    list_display = ("name", "farm", "pond_type", "area_m2", "active")
+    list_display = ("id", "name", "farm", "pond_type", "area_m2", "active")
+    list_display_links = ("name",)
+    readonly_fields = ("id",)
     list_filter = ("pond_type", "active", "farm")
     search_fields = ("name",)
+    ordering = ("id",)
 
 
 @admin.register(Crop)
@@ -87,7 +90,7 @@ class ExpenseAdmin(admin.ModelAdmin):
 
 @admin.register(SensorReading)
 class SensorReadingAdmin(admin.ModelAdmin):
-    list_display = ("pond", "ph", "salinity_ppt", "temperature_c", "recorded_at", "source")
+    list_display = ("id", "pond", "ph", "salinity_ppt", "temperature_c", "recorded_at", "source")
     list_filter = ("source", "pond")
 
 

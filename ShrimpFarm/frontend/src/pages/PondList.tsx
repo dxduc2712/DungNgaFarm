@@ -33,7 +33,9 @@ export default function PondList() {
             <div className="flex items-start justify-between gap-3">
               <div>
                 <h2 className="text-lg font-semibold text-ink">{pond.name}</h2>
-                <p className="text-sm text-ink-muted">{pondTypeLabel(pond.pond_type)}</p>
+                <p className="text-sm text-ink-muted">
+                  {t('ponds.firmwareId', { id: pond.id })} · {pondTypeLabel(pond.pond_type)}
+                </p>
               </div>
               <span
                 className={`rounded-full px-2.5 py-1 text-xs font-medium ${

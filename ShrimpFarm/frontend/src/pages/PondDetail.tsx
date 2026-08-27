@@ -70,6 +70,10 @@ export default function PondDetail() {
           <h2 className="font-semibold text-ink">{t('ponds.infoTitle')}</h2>
           <dl className="mt-3 space-y-2 text-sm text-ink-muted">
             <div className="flex justify-between">
+              <dt>ID</dt>
+              <dd>{pond.id}</dd>
+            </div>
+            <div className="flex justify-between">
               <dt>{t('common.area')}</dt>
               <dd>{pond.area_m2 ?? '—'} m²</dd>
             </div>
