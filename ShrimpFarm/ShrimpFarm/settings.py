@@ -2,9 +2,12 @@
 Django settings for ShrimpFarm project.
 """
 
+import mimetypes
 import os
 from datetime import timedelta
 from pathlib import Path
+
+mimetypes.add_type("application/manifest+json", ".webmanifest")
 
 import dj_database_url
 from dotenv import load_dotenv
