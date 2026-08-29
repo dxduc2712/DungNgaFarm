@@ -2,8 +2,13 @@
 
 export const labelClass = 'block text-sm font-medium text-ink'
 
-export const inputClass =
-  'mt-1.5 w-full min-w-0 max-w-full rounded-xl border border-border-soft bg-white px-3.5 py-2.5 text-base text-ink shadow-sm outline-none transition placeholder:text-ink-faint focus:border-aqua focus:ring-2 focus:ring-aqua/20 disabled:cursor-not-allowed disabled:bg-surface disabled:text-ink-muted'
+const inputControlClass =
+  'w-full min-w-0 max-w-full rounded-xl border border-border-soft bg-white py-2.5 text-base text-ink shadow-sm outline-none transition placeholder:text-ink-faint focus:border-aqua focus:ring-2 focus:ring-aqua/20 disabled:cursor-not-allowed disabled:bg-surface disabled:text-ink-muted'
+
+export const inputClass = `mt-1.5 px-3.5 ${inputControlClass}`
+
+/** Nested in a relative wrapper with an in-field toggle; extra right padding clears the icon. */
+export const passwordInputClass = `pl-3.5 pr-11 ${inputControlClass}`
 
 export const inputReadonlyClass =
   'mt-1.5 w-full min-w-0 max-w-full cursor-default rounded-xl border border-border-soft bg-surface px-3.5 py-2.5 text-base text-ink-muted outline-none'

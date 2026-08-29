@@ -2,6 +2,7 @@ import { type FormEvent, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import AuthLayout from '../components/AuthLayout'
+import PasswordInput from '../components/PasswordInput'
 import {
   formErrorClass,
   inputClass,
@@ -96,23 +97,19 @@ export default function Register() {
         </div>
         <label className={labelClass}>
           {t('register.password')}
-          <input
-            type="password"
+          <PasswordInput
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="new-password"
-            className={inputClass}
             required
           />
         </label>
         <label className={labelClass}>
           {t('register.passwordConfirm')}
-          <input
-            type="password"
+          <PasswordInput
             value={passwordConfirm}
             onChange={(e) => setPasswordConfirm(e.target.value)}
             autoComplete="new-password"
-            className={inputClass}
             required
           />
         </label>

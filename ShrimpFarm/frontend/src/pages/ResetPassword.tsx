@@ -2,9 +2,9 @@ import { type FormEvent, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import AuthLayout from '../components/AuthLayout'
+import PasswordInput from '../components/PasswordInput'
 import {
   formErrorClass,
-  inputClass,
   labelClass,
   linkClass,
   primaryButtonBlockClass,
@@ -78,23 +78,19 @@ export default function ResetPassword() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <label className={labelClass}>
           {t('resetPassword.newPassword')}
-          <input
-            type="password"
+          <PasswordInput
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="new-password"
-            className={inputClass}
             required
           />
         </label>
         <label className={labelClass}>
           {t('resetPassword.passwordConfirm')}
-          <input
-            type="password"
+          <PasswordInput
             value={passwordConfirm}
             onChange={(e) => setPasswordConfirm(e.target.value)}
             autoComplete="new-password"
-            className={inputClass}
             required
           />
         </label>

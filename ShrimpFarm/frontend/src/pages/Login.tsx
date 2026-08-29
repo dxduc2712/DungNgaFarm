@@ -2,6 +2,7 @@ import { type FormEvent, useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import AuthLayout from '../components/AuthLayout'
+import PasswordInput from '../components/PasswordInput'
 import {
   formErrorClass,
   formSuccessClass,
@@ -63,18 +64,16 @@ export default function Login() {
           />
         </label>
         <label className={labelClass}>
-          <span className="flex items-center justify-between gap-3">
-            <span>{t('login.password')}</span>
-            <Link to="/forgot-password" className={`text-xs font-medium ${linkClass}`}>
+          <span className="flex min-w-0 items-center justify-between gap-3">
+            <span className="min-w-0">{t('login.password')}</span>
+            <Link to="/forgot-password" className={`min-w-0 text-xs font-medium ${linkClass}`}>
               {t('login.forgotPassword')}
             </Link>
           </span>
-          <input
-            type="password"
+          <PasswordInput
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
-            className={inputClass}
             required
           />
         </label>
