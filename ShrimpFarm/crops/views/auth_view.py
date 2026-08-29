@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
@@ -22,6 +24,8 @@ from ..serializers.user_serializer import (
     build_password_reset_token,
     build_password_reset_uid,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class EmailOrUsernameTokenObtainPairView(TokenObtainPairView):
@@ -87,17 +91,20 @@ class PasswordResetRequestView(APIView):
         )
         reset_link = f"{frontend_url}/reset-password/{uid}/{token}"
 
-        send_mail(
-            subject="Reset your MinhDungFarm password",
-            message=(
-                "You requested a password reset for your MinhDungFarm account.\n\n"
-                f"Open this link to set a new password:\n{reset_link}\n\n"
-                "If you did not request this, you can ignore this email."
-            ),
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[user.email],
-            fail_silently=True,
-        )
+        try:
+            send_mail(
+                subject="Reset your MinhDungFarm password",
+                message=(
+                    "You requested a password reset for your MinhDungFarm account.\n\n"
+                    f"Open this link to set a new password:\n{reset_link}\n\n"
+                    "If you did not request this, you can ignore this email."
+                ),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                fail_silently=False,
+            )
+        except Exception:
+            logger.exception("Failed to send password-reset email to %s", user.email)
         return Response(generic)
 
 

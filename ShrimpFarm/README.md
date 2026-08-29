@@ -121,7 +121,7 @@ GitHub only stores the repo. Render (or Railway) runs it and gives a public HTTP
    - Dockerfile path: `ShrimpFarm/Dockerfile`
    - Context: `ShrimpFarm`
 3. Add a **PostgreSQL** database and set `DATABASE_URL` (Blueprint `render.yaml` does this).
-4. Set env vars (do not commit secrets): `SECRET_KEY`, `DEBUG=False`, `MQTT_USER`, `MQTT_PASSWORD`, `MQTT_HOST`. `RENDER_EXTERNAL_HOSTNAME` is set automatically.
+4. Set env vars (do not commit secrets): `SECRET_KEY`, `DEBUG=False`, `MQTT_USER`, `MQTT_PASSWORD`, `MQTT_HOST`. For forgot-password email, also set `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL` (Gmail App Password, not the Google login password). `RENDER_EXTERNAL_HOSTNAME` is set automatically.
 5. After the first deploy, open the Render **Shell** and run:
 
 ```bash
